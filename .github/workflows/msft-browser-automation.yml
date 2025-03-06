@@ -114,6 +114,7 @@ jobs:
             echo "ENV_NAME=msft_prod" >> $GITHUB_OUTPUT
           else
             echo "ENV_NAME=${{ github.ref_name }}-withoutapproval" >> $GITHUB_OUTPUT
+          fi
         shell: bash        
   create-vm:
     name: "Create Virtual machine resource"
