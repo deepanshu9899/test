@@ -115,7 +115,9 @@ jobs:
           else
             echo "ENV_NAME=${{ github.ref_name }}-withoutapproval" >> $GITHUB_OUTPUT
           fi
-        shell: bash        
+        shell: bash
+      - name: Echo Environment
+        run: echo "Environment set to ${{ steps.determine-env.outputs.ENV_NAME }}"        
   create-vm:
     name: "Create Virtual machine resource"
     runs-on: ubuntu-latest
