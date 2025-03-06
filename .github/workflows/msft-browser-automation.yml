@@ -105,7 +105,7 @@ jobs:
   create-vm:
     name: "Create Virtual machine resource"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || github.ref_name }}
+    environment: msft_prod
     env:
       SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}
       RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
