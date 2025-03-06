@@ -117,11 +117,25 @@ jobs:
           echo image_creation_source        : "${{ inputs.image_creation_source }}"
           echo image_creation_source_id     : "${{ inputs.image_creation_source_id }}"
           echo jira                         : "${{ inputs.jira }}"
+  setup-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      ENV_NAME: ${{ steps.determine-env.outputs.ENV_NAME }}
+    steps:
+      - name: Determine Environment
+        id: determine-env
+        run: |
+          if [[ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]]; then
+            echo "ENV_NAME=msft_prod" >> $GITHUB_OUTPUT
+          else
+            echo "ENV_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        shell: bash
 
   gallery-image-creation:
     name: Create the specialised image and store in image gallery
     runs-on: ubuntu-latest
-    environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || github.ref_name}}
+    needs: [setup-environment]
+    environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
 
 
     env:

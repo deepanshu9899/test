@@ -102,10 +102,24 @@ jobs:
           echo source_image_id        : "${{ github.event.inputs.source_image_id }}"
           echo gallery_image_version_to_create: "${{ github.event.inputs.gallery_image_version_to_create }}"
 
+  setup-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      ENV_NAME: ${{ steps.determine-env.outputs.ENV_NAME }}
+    steps:
+      - name: Determine Environment
+        id: determine-env
+        run: |
+          if [[ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]]; then
+            echo "ENV_NAME=msft_prod" >> $GITHUB_OUTPUT
+          else
+            echo "ENV_NAME=${{ github.ref_name }}-withoutapproval" >> $GITHUB_OUTPUT
+        shell: bash        
   create-vm:
     name: "Create Virtual machine resource"
     runs-on: ubuntu-latest
-    environment: msft_prod
+    environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
+    needs: [setup-environment]
     env:
       SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}
       RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
@@ -180,8 +194,8 @@ jobs:
   
   run_script_on_vm:
     runs-on: ubuntu-latest
-    environment:  ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || format('{0}-withoutapproval', github.ref_name) }}
-    needs: [create-vm]
+    environment:  ${{ needs.setup-environment.outputs.ENV_NAME }}
+    needs: [create-vm,setup-environment]
     env:
       SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_MSFT}}
       RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
@@ -220,9 +234,9 @@ jobs:
   create-os-gallery-image:
     name: Start Creation of OS gallery Image for VM ${{ github.event.inputs.virtual_machine_name }} by ${{ github.actor }}
     uses: deepanshu9899/test/.github/workflows/create-os-gallery-image.yml@prod
-    needs: [run_script_on_vm]
+    needs: [run_script_on_vm,setup-environment]
     with:
-      environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || format('{0}-withoutapproval', github.ref_name) }}
+      environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
       resource_group_name: ${{ github.event.inputs.resource_group_name }}
       virtual_machine_name: "my-vm-${{ github.event.inputs.jira }}"
       older_source_image_id: ${{ github.event.inputs.source_image_id }}
@@ -240,7 +254,7 @@ jobs:
       OUTPUT_GALLERY_NAME: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_NAME }}
       OUTPUT_GALLERY_IMAGE_DEFINITION: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_IMAGE_DEFINITION }}
     needs: [create-os-gallery-image]
-    environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || format('{0}-withoutapproval', github.ref_name) }}
+    environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
     env:
         SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}
         SOURCE_IMAGE_ID: ${{ github.event.inputs.source_image_id }}
@@ -341,7 +355,7 @@ jobs:
   trigger-qa-smoke-tests:
     name: Trigger QA Smoke Tests
     needs: [update-vmss-win-image]
-    environment: ${{ github.ref_name }}-withoutapproval
+    environment: ${{github.ref_name-withoutapproval}}
     runs-on: ubuntu-latest
     steps:
       - name: Trigger QA Smoke Tests in External Repository
