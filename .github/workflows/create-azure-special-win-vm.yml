@@ -1,0 +1,363 @@
+name: Create Azure Special Windows VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Browser to validate"
+        required: true
+        type: string
+      versions:
+        description: "Browser version to validate"
+        required: true
+        type: string
+      platform:
+        description: "Operating system for testing"
+        required: true
+        type: string
+      jira:
+        description: "add jira ticket number"
+        type: string
+        required: true
+
+      resource_group_name:
+        type: choice
+        description: Select the resources Group Names
+        required: true
+        default: "Hypertest-Production"
+        options:
+          - Hypertest-Production
+          - hyperexecute-prod-extended
+
+      virtual_network_name:
+        type: choice
+        description: Select the Virtual Network
+        required: true
+        default: "Hypertest-Production-vnet"
+        options:
+          - Hypertest-Production-vnet
+          - hyperexecute-production-vnet-south-india
+          - hyperexecute-production-vnet-us-west-3
+          - hyperexecute-prod-vnet-west-europe
+
+      virtual_network_subnet_name:
+        type: choice
+        description: Select the Subnet for the selected Virtual Network
+        required: true
+        default: "hypertestProductionVmssSubnet6 (Hypertest-Production-vnet)"
+        options:
+          - hypertestProductionVmssSubnet6 (Hypertest-Production-vnet)
+          - hypertestProductionVmssSubnet
+          - publicSubnet
+
+    
+
+
+      
+
+      os_version:
+        type: choice
+        required: true
+        description: OS-version
+        options:
+          - win10
+          - win11
+
+      source_image_id:
+        type: string
+        description: The Azure Compute Gallary image resource ID
+        required: true
+      
+      gallery_image_version_to_create:
+        type: string
+        required: true
+        description: Provide the incremental version of the image
+
+
+permissions:
+  contents: read
+
+env:
+  ARM_SKIP_PROVIDER_REGISTRATION: true
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu20
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo " ALL THE INPUTS PROVIDED IN WORKFLOW TRIGGER "
+          echo jira                   : "${{ github.event.inputs.jira }}"
+          echo resource_group_name    : "${{ github.event.inputs.resource_group_name }}"
+          echo virtual_network_name   : "${{ github.event.inputs.virtual_network_name }}"
+          echo virtual_network_subnet_name: "${{ github.event.inputs.virtual_network_subnet_name }}"
+          echo virtual_machine_name   : "my-vm-${{ github.event.inputs.jira }}"
+          echo virtual_machine_size   : "Standard_D4ads_v5"
+          echo priority               : "Spot"
+          echo os_version             : "${{ github.event.inputs.os_version }}"
+          echo source_image_id        : "${{ github.event.inputs.source_image_id }}"
+          echo gallery_image_version_to_create: "${{ github.event.inputs.gallery_image_version_to_create }}"
+
+  create-vm:
+    name: "Create Virtual machine resource"
+    runs-on: ubuntu20
+    environment: ${{ github.ref_name }}
+    env:
+      SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
+      VNET_NAME: ${{ github.event.inputs.virtual_network_name }}
+      VNET_SUBNET_NAME: ${{ github.event.inputs.virtual_network_subnet_name }}
+      VM_NAME: "my-vm-${{ github.event.inputs.jira }}"
+      PRIORITY: "Spot"
+      VM_SIZE: "Standard_D4ads_v5"
+      SOURCE_IMAGE_ID: ${{ github.event.inputs.source_image_id }}
+      CREATOR: ${{ github.actor }}
+      JIRA: ${{ github.event.inputs.jira }}
+      AZURE_WIN_LTUSER_PASS: ${{ secrets.AZURE_WIN_LTUSER_PASS }}
+      OS_VERSION: ${{ github.event.inputs.os_version }}
+
+    permissions:
+      contents: read
+      issues: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install awk in the runner
+        run: sudo apt-get update && sudo apt-get install -y gawk
+
+      - name: Azure CLI script
+        run: |
+
+          sudo apt-get update && sudo apt-get install -y gawk
+          echo "Azure Account logged in Subscription ID "$SUBSCRIPTION_ID" ..."
+          export SUBNET_NAME=$(echo "$VNET_SUBNET_NAME" | cut -d' ' -f1)
+          export GALLERY_NAME=$(echo "$SOURCE_IMAGE_ID" | awk -F '/' '{print $9}')
+          export GALLERY_IMAGE_DEFINITION=$(echo "$SOURCE_IMAGE_ID" | awk -F '/' '{print $11}')
+          echo GALLERY_NAME $GALLERY_NAME 
+          echo GALLERY_IMAGE_DEFINITION $GALLERY_IMAGE_DEFINITION
+          export SECURITY_TYPE="Standard"
+          if [ "$OS_VERSION" == "win11" ]; then
+            export SECURITY_TYPE="TrustedLaunch"
+          fi
+
+          az account show
+
+          echo "Creating the Azure VM ..."
+
+          az vm create -n "$VM_NAME" \
+          -g "$RESOURCE_GROUP_NAME" \
+          --image "$SOURCE_IMAGE_ID" \
+          --specialized true \
+          --priority "$PRIORITY" \
+          --security-type $SECURITY_TYPE \
+          --storage-sku Standard_LRS \
+          --size "$VM_SIZE" \
+          --license-type Windows_Server \
+          --vnet-name "$VNET_NAME" \
+          --subnet "$SUBNET_NAME" \
+          --admin-password "$AZURE_WIN_LTUSER_PASS" \
+          --location eastus \
+          --os-disk-delete-option Delete \
+          --nic-delete-option Delete \
+          --accelerated-networking true \
+          --tags Environment=${{ github.ref_name }} Product=Hyperexecute Creator="$CREATOR" Jira="$JIRA"
+          echo "Creation of the Azure VM done"
+  
+  run_script_on_vm:
+    runs-on: ubuntu20
+    environment: ${{ github.ref_name }}-withoutapproval
+    needs: [create-vm]
+    env:
+      SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
+      VM_NAME: "my-vm-${{ github.event.inputs.jira }}"
+    
+    permissions:
+      contents: read
+      issues: write
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+      - name: Azure CLI script
+        run: |
+          echo "Execute Browser Baked In script"
+          
+          az vm run-command invoke \
+          --resource-group $RESOURCE_GROUP_NAME \
+          --name $VM_NAME \
+          --command-id RunPowerShellScript \
+          --scripts "
+            Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/shubhamdang/browser-downloader/refs/heads/main/downloader.py' -OutFile 'C:\\Users\\ltuser\\downloader.py';
+            python C:\\Users\\ltuser\\downloader.py --branch ${{ github.ref_name }};
+            Remove-Item 'C:\\Users\\ltuser\\downloader.py';
+            Clear-Content -Path G:\startup.log;
+            Stop-Computer -Force"
+
+
+  create-os-gallery-image:
+    name: Start Creation of OS gallery Image for VM ${{ github.event.inputs.virtual_machine_name }} by ${{ github.actor }}
+    uses: LambdatestIncPrivate/hyperexecute-devops/.github/workflows/create-os-gallery-image.yml@browser_automation_prod
+    needs: [run_script_on_vm]
+    with:
+      environment: ${{ github.ref_name }}-withoutapproval
+      resource_group_name: ${{ github.event.inputs.resource_group_name }}
+      virtual_machine_name: "my-vm-${{ github.event.inputs.jira }}"
+      older_source_image_id: ${{ github.event.inputs.source_image_id }}
+      image_creation_source: "Virtual Machine"
+      trigger_source: "workflow_call"
+      gallery_image_version_to_create: ${{ github.event.inputs.gallery_image_version_to_create }}
+      jira: ${{ github.event.inputs.jira }}
+    secrets: inherit
+
+
+  wait-for-image-completion-delete-vm:
+    name: Wait for OS Image creation completion
+    runs-on: ubuntu20
+    outputs:
+      OUTPUT_GALLERY_NAME: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_NAME }}
+      OUTPUT_GALLERY_IMAGE_DEFINITION: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_IMAGE_DEFINITION }}
+    needs: [create-os-gallery-image]
+    environment: ${{ github.ref_name }}-withoutapproval
+    env:
+        SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        SOURCE_IMAGE_ID: ${{ github.event.inputs.source_image_id }}
+        RESOURCE_GROUP_NAME: ${{ github.event.inputs.resource_group_name }}
+        VM_NAME: "my-vm-${{ github.event.inputs.jira }}"
+        NEW_VERSION: ${{ github.event.inputs.gallery_image_version_to_create }}
+
+    permissions:
+        contents: read
+        issues: write
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install awk in the runner
+        run: sudo apt-get update && sudo apt-get install -y gawk
+
+
+      - id: wait_os_image_creation
+        name: Wait for OS Image to be created and delete the VM
+        run: |
+          export GALLERY_NAME=$(echo "$SOURCE_IMAGE_ID" | awk -F '/' '{print $9}')
+          export GALLERY_IMAGE_DEFINITION=$(echo "$SOURCE_IMAGE_ID" | awk -F '/' '{print $11}')
+          max_attempts=19
+          attempt=1
+
+          while [ $attempt -lt $max_attempts ]; do
+              # sleeping for 300 second to ensure that image creation has started.
+              echo "Starting Attempt: $attempt"
+              sleep 300
+
+              # Attempt to get the provisioning state
+              status=$(az sig image-version show \
+                  --resource-group $RESOURCE_GROUP_NAME \
+                  --gallery-name $GALLERY_NAME \
+                  --gallery-image-definition $GALLERY_IMAGE_DEFINITION \
+                  --gallery-image-version $NEW_VERSION \
+                  --subscription $SUBSCRIPTION_ID --query "provisioningState" -o tsv)
+
+              echo "Current image creation status: $status"
+
+              if [ "$status" == "Succeeded" ]; then
+                  break
+              fi
+
+              echo "Waiting for image creation to complete..."
+              
+              # Increment the attempt counter
+              attempt=$((attempt + 1))
+          done
+
+          echo "Image Creation Completed."
+
+          if [ $attempt -eq $max_attempts ]; then
+              echo "Max attempts reached. Exiting..."
+          fi
+    
+          echo "OUTPUT_GALLERY_NAME=$GALLERY_NAME" >> $GITHUB_OUTPUT
+          echo "OUTPUT_GALLERY_IMAGE_DEFINITION=$GALLERY_IMAGE_DEFINITION" >> $GITHUB_OUTPUT
+          cat  $GITHUB_OUTPUT
+
+          echo "Deleting the VM"
+          az account show
+
+          export NIC_ID=$(az vm show  --name "$VM_NAME" --resource-group "$RESOURCE_GROUP_NAME" --show-details --subscription "$SUBSCRIPTION_ID"  --query "networkProfile.networkInterfaces[0].id" -o tsv)
+          export PUBLIC_IP_ID=$(az network nic show  --ids "$NIC_ID" --resource-group "$RESOURCE_GROUP_NAME" --subscription "$SUBSCRIPTION_ID" --query "ipConfigurations[0].publicIPAddress.id")
+          echo "NIC ID $NIC_ID , PUBLIC_IP_ID $PUBLIC_IP_ID"
+
+          az vm delete --name "$VM_NAME" \
+          --resource-group "$RESOURCE_GROUP_NAME" \
+          --subscription "$SUBSCRIPTION_ID" \
+          --yes
+          echo "Deleteion done"
+
+          echo "Delete the Azure VM Public IP..."
+          az network public-ip delete --ids "$PUBLIC_IP_ID"
+          echo "Deletion of the Azure VM Public IP done"
+
+  update-vmss-win-image:
+    name: Update existing VMSS with the new OS image ${{ github.event.inputs.virtual_machine_name }} by ${{ github.actor }}
+    uses: LambdatestIncPrivate/hyperexecute-devops/.github/workflows/update-vmss-win-image-composite.yml@prod
+    needs: [wait-for-image-completion-delete-vm]
+    with:
+      resource_group: ${{ github.event.inputs.resource_group_name }}
+      os_version: ${{ github.event.inputs.os_version }}
+      gallery_name: ${{ needs.wait-for-image-completion-delete-vm.outputs.OUTPUT_GALLERY_NAME }}
+      image_definition: ${{ needs.wait-for-image-completion-delete-vm.outputs.OUTPUT_GALLERY_IMAGE_DEFINITION }}
+      image_version: ${{ github.event.inputs.gallery_image_version_to_create }}
+    secrets: inherit
+  
+  
+  trigger-qa-smoke-tests:
+    name: Trigger QA Smoke Tests
+    needs: [update-vmss-win-image]
+    environment: ${{ github.ref_name }}-withoutapproval
+    runs-on: ubuntu20
+    steps:
+      - name: Trigger QA Smoke Tests in External Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.QA_AUTOMATION_TOKEN }}
+          BROWSER: ${{ github.event.inputs.browser }}
+          VERSION: ${{ github.event.inputs.versions }}
+          OPERATING_SYSTEM: ${{ github.event.inputs.platform }}
+          ENVIRONMENT: ${{ github.ref_name }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/LambdatestIncPrivate/hyperexecute-touchstone/actions/workflows/browserselenium_version_validation.yml/dispatches \
+            -d "{
+              \"ref\": \"master\",
+              \"inputs\": {
+                \"browsers\": \"$BROWSER\",
+                \"versions\": \"$VERSION\",
+                \"platform\": \"$OPERATING_SYSTEM\",
+                \"environment\": \"$ENVIRONMENT\"
+              }
+            }"

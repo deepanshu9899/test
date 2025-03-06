@@ -1,0 +1,18 @@
+name: "TCC permission"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tcc_permission:
+    runs-on: macos-14
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Check Screen Capture Permission
+        run: |
+          sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db "SELECT * FROM access WHERE service='kTCCServiceScreenCapture';"
+      - name: Check ServiceSystemPolicy Permission
+        run: |
+          sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db "SELECT * FROM access WHERE service='kTCCServiceSystemPolicyAllFiles';"

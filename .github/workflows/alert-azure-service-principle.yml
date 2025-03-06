@@ -1,0 +1,70 @@
+name: Run Service Principle Python Script
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string     
+  workflow_dispatch:  
+  schedule:
+    - cron: "30 6 * * *"
+
+jobs:
+  build-workflow-dispatch:
+    if: ${{ !inputs.branch || inputs.branch == '' }}
+    runs-on: ubuntu
+    environment: ${{ github.ref_name }}-withoutapproval
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+        
+    - name: Install dependencies 
+      run: |
+        pip3 install requests pandas azure-identity openpyxl azure-storage-blob slack-sdk
+
+    - name: Run Python script
+      run: python3 tools/service-principle/service_principle.py
+
+  build-workflow-call:
+    if: ${{ inputs.branch && inputs.branch != '' }}
+    runs-on: ubuntu
+    environment: ${{ inputs.branch }}-withoutapproval
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+        
+    - name: Install dependencies 
+      run: |
+        pip3 install requests pandas azure-identity openpyxl azure-storage-blob slack-sdk
+
+    - name: Run Python script
+      run: python3 tools/service-principle/service_principle.py --branch ${{ inputs.branch }}

@@ -1,0 +1,571 @@
+name: Upload Executor to S3
+on: 
+  workflow_dispatch:
+    inputs:
+      binary_url:
+        type: string
+        description: Url of Executor
+        required: true
+      executor_type:
+        description: 'Executor Type'
+        required: true
+        type: choice
+        options:
+          - java
+          - javascript
+          - dotnet-8
+          - dotnet-5
+      platform:
+        description: 'OS Platform'
+        required: false
+        type: choice
+        options:
+          - win
+          - mac
+          - linux
+
+jobs:
+  upload_java_runners:
+    if: ${{ github.event.inputs.executor_type == 'java' }}
+    name: "Upload Java Runners"
+    runs-on: ubuntu
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-java.jar
+
+    - name: Get Java Executor Binary Name
+      run: |
+        version=$(java -jar executeengine-java.jar --version | awk '/Version:/ {print $2}')
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=executeengine-java-${version}.jar" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-java.jar s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/java-runner/v2.0/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"executeengine-java\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Java ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_dotnet8_runners_win:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-8' && github.event.inputs.platform == 'win' }}
+    name: "Upload dotnet-8 Windows Runners"
+    runs-on: Windows
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: Invoke-WebRequest ${{ github.event.inputs.binary_url }} -OutFile executeengine-csharp.exe
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        version=$(./executeengine-csharp.exe --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-8-win-${version}.exe" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp.exe s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      shell: bash
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-8-win\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Windows dotnet-8 ExecuteEngine version on ${{ github.ref_name }}"
+  
+  upload_dotnet8_runners_linux:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-8' && github.event.inputs.platform == 'linux' }}
+    name: "Upload dotnet-8 Linux Runners"
+    runs-on: ubuntu
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-csharp
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-csharp
+        version=$(./executeengine-csharp --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-8-linux-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-8-linux\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Linux  dotnet-8 ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_dotnet8_runners_mac:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-8' && github.event.inputs.platform == 'mac' }}
+    name: "Upload dotnet-8 Mac Runners"
+    runs-on: macos-latest
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-csharp
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-csharp
+        version=$(./executeengine-csharp --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-8-mac-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-8-mac\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Mac dotnet-8 ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_javascript_runners_win:
+    if: ${{ github.event.inputs.executor_type == 'javascript' && github.event.inputs.platform == 'win' }}
+    name: "Upload Javascript Windows Runners"
+    runs-on: Windows
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: Invoke-WebRequest ${{ github.event.inputs.binary_url }} -OutFile executeengine-javascript.exe
+
+    - name: Get javascript Executor Binary Name
+      shell: bash
+      run: |
+        version=$(./executeengine-javascript.exe --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=executeengine-javascript-win-${version}.exe" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-javascript.exe s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/javascript-runner/${{ env.BINARY_NAME }}
+    - name: Update Binary version in DB
+      shell: bash
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"executeengine-javascript-win\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Windows javascript ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_javascript_runners_linux:
+    if: ${{ github.event.inputs.executor_type == 'javascript' && github.event.inputs.platform == 'linux' }}
+    name: "Upload javascript Linux Runners"
+    runs-on: ubuntu
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-javascript
+
+    - name: Get javascript Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-javascript
+        version=$(./executeengine-javascript --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=executeengine-javascript-linux-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-javascript s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/javascript-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"executeengine-javascript-linux\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Linux javascript ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_javascript_runners_mac:
+    if: ${{ github.event.inputs.executor_type == 'javascript' && github.event.inputs.platform == 'mac' }}
+    name: "Upload javascript Mac Runners"
+    runs-on: macos-latest
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-javascript
+
+    - name: Get javascript Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-javascript
+        version=$(./executeengine-javascript --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=executeengine-javascript-mac-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-javascript s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/javascript-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"executeengine-javascript-mac\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Mac javascript ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_dotnet5_runners_win:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-5' && github.event.inputs.platform == 'win' }}
+    name: "Upload dotnet-5 Windows Runners"
+    runs-on: Windows
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: Invoke-WebRequest ${{ github.event.inputs.binary_url }} -OutFile executeengine-csharp.exe
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        version=$(./executeengine-csharp.exe --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-5-win-${version}.exe" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp.exe s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      shell: bash
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-5-win\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Windows dotnet-5 ExecuteEngine version on ${{ github.ref_name }}"
+  
+  upload_dotnet5_runners_linux:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-5' && github.event.inputs.platform == 'linux' }}
+    name: "Upload dotnet-5 Linux Runners"
+    runs-on: ubuntu
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-csharp
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-csharp
+        version=$(./executeengine-csharp --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-5-linux-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-5-linux\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Linux dotnet-5 ExecuteEngine version on ${{ github.ref_name }}"
+
+  upload_dotnet5_runners_mac:
+    if: ${{ github.event.inputs.executor_type == 'dotnet-5' && github.event.inputs.platform == 'mac' }}
+    name: "Upload dotnet-5 Mac Runners"
+    runs-on: macos-latest
+    environment: ${{ github.ref_name == 'stage' && 'stage--without-approval' || github.ref_name }}
+
+    steps:
+    - name: Download binary
+      run: wget --content-disposition "${{ github.event.inputs.binary_url }}" -O executeengine-csharp
+
+    - name: Get CSharp Executor Binary Name
+      shell: bash
+      run: |
+        chmod +x ./executeengine-csharp
+        version=$(./executeengine-csharp --version)
+        if [ -z "${version}" ]; then
+          echo "Version extraction failed"
+          exit 1
+        else
+          echo "BINARY_VERSION=${version}" >> $GITHUB_ENV
+          echo "BINARY_NAME=ExecuteEngine-dotnet-5-mac-${version}" >> $GITHUB_ENV
+        fi
+
+    - name: Set environment specific variables
+      run: |
+        if [[ "${{ github.ref_name }}" == "stage" ]]; then
+          SENTINAL_BRANCH="STAGE"
+          ENV="DEV"
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          SENTINAL_BRANCH="MASTER"
+          ENV="PROD"
+        else
+          echo "Invalid environment"
+          exit 1
+        fi
+
+        echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_${ENV}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_${ENV}" >> $GITHUB_ENV
+        echo "SENTINEL_ENDPOINT=SENTINEL_${SENTINAL_BRANCH}" >> $GITHUB_ENV
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[env.AWS_SECRET_ACCESS_KEY] }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      run: |
+        aws s3 cp executeengine-csharp s3://${{ github.ref_name }}-common-downloads-v1/hyperexecute/csharp-runner/${{ env.BINARY_NAME }}
+
+    - name: Update Binary version in DB
+      if: success()
+      run: |
+        curl --fail --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" --header "Content-Type: application/json" --request POST --data "{\"name\":\"ExecuteEngine-dotnet-5-mac\",\"max\":\"${{ env.BINARY_VERSION }}\"}" https://${{ secrets[env.SENTINEL_ENDPOINT] }}/v1.0/asset-version
+        echo "Updated Mac dotnet-5 ExecuteEngine version on ${{ github.ref_name }}"
+
+

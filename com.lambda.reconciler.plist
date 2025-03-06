@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>Disabled</key>
+        <false/>
+        <key>ExitTimeOut</key>
+        <integer>1800</integer>
+        <key>EnvironmentVariables</key>
+        <dict>
+        <key>PATH</key>
+        <string>$PATH:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/opt/homebrew/bin</string>
+        <key>HOST_IP</key>
+        <string>{{ host_ip }}</string>
+        <key>ENV</key>
+        <string>{{ env }}</string>
+        </dict>
+        <key>UserName</key>
+        <string>root</string>
+        <key>GroupName</key>
+        <string>wheel</string>
+        <key>InitGroups</key>
+        <true/>
+        <key>KeepAlive</key>
+        <true/>
+        <key>Label</key>
+        <string>{{ label }}</string>
+        <key>ProgramArguments</key>
+        <array>
+        {% if machine_type == 'intel' %}
+        <string>/Applications/Reconciler/reconciler-intel</string>
+        {% else %}
+        <string>/Applications/Reconciler/new-reconciler-m1</string>
+        {% endif %}
+        <string>--nonRootUser={{ non_root_user }}</string>
+        <string>--interval={{ reconciler_interval }}</string>
+        <string>--url={{ reconciler_url }}</string>
+        <string>--read-only={{ read_only }}</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>StandardOutPath</key>
+        <string>{{ stdout_path }}</string>
+        <key>StandardErrorPath</key>
+        <string>{{ stderr_path }}</string>
+        <key>WorkingDirectory</key>
+        <string>/Applications/Reconciler</string>
+</dict>
+</plist>

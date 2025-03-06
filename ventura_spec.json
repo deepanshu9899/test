@@ -1,0 +1,4579 @@
+{
+    "version": "v1.0.23-ventura",
+    "type": "HOST",
+    "dependencies": [
+        {
+            "name": "VENTURA_PERMISSIONS_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/Documents/ventura_permissions.sh",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "a390de67259dd6eb6aaa1e653dd39edb",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/ventura_permissions.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "VENTURA_PERMISSIONS_HANDLER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "VENTURA_PERMISSIONS_SCRIPT_DOWNLOAD"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/Users/ltuser/Documents/ventura_permissions.sh scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Permissions are correct"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/Users/ltuser/Documents/ventura_permissions.sh sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "DOCUMENTS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/Documents ] && [ $(stat -f '%Su' /Users/ltuser/Documents) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/Documents) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/Documents) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/Documents' ] && rm '/Users/ltuser/Documents';mkdir -p /Users/ltuser/Documents && chown -R ltuser:staff /Users/ltuser/Documents && chmod 0755 /Users/ltuser/Documents"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "XCODE_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/xcode_manager.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "b471c495ea5fbd5155749201e5583ea1",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/new/xcode_manager.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "POST_XCODE_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/post_xcode_manager.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "3b00dccc6a797118f64bfeab7cbf491f",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/new/post_xcode_manager.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "XCODE_MANAGER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "XCODE_HANDLER_SCRIPT_DOWNLOAD",
+                "POST_XCODE_HANDLER_SCRIPT_DOWNLOAD",
+                "VENTURA_PERMISSIONS_HANDLER"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "sudo bash /Users/ltuser/Documents/xcode_manager.sh scan 14.0"
+                    ],
+                    "expected_output": "Xcode is installed and version is correct.",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "sudo bash /Users/ltuser/Documents/xcode_manager.sh sync 14.0; sudo xcodebuild -runFirstLaunch"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "IOSTRUST_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "iostrust --version"
+                    ],
+                    "expected_output": "ios Trust 1.0.0",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "gem install iostrust"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc ] && [ $(stat -f '%Su' /Users/ltuser/lrc) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc' ] && rm '/Users/ltuser/lrc';mkdir -p /Users/ltuser/lrc && chown -R ltuser:staff /Users/ltuser/lrc && chmod 0755 /Users/ltuser/lrc"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_SELENIUM_STANDALONE_JARS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/selenium-standalone-jars ] && [ $(stat -f '%Su' /Users/ltuser/lrc/selenium-standalone-jars) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/selenium-standalone-jars) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/selenium-standalone-jars) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/selenium-standalone-jars' ] && rm '/Users/ltuser/lrc/selenium-standalone-jars';mkdir -p /Users/ltuser/lrc/selenium-standalone-jars && chown -R ltuser:staff /Users/ltuser/lrc/selenium-standalone-jars && chmod 0755 /Users/ltuser/lrc/selenium-standalone-jars"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_WEBRTC_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/webrtc-streamer ] && [ $(stat -f '%Su' /Users/ltuser/lrc/webrtc-streamer) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/webrtc-streamer) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/webrtc-streamer) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/webrtc-streamer' ] && rm '/Users/ltuser/lrc/webrtc-streamer';mkdir -p /Users/ltuser/lrc/webrtc-streamer && chown -R ltuser:staff /Users/ltuser/lrc/webrtc-streamer && chmod 0755 /Users/ltuser/lrc/webrtc-streamer"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LTUSER_LIBRARY_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "stat -f '%Su' /Users/ltuser/Library/"
+                    ],
+                    "expected_output": "ltuser",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "chown ltuser:staff /Users/ltuser/Library/"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_VAR_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_ARM_PERMISSIONS",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh ensure_homebrew_directory scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "HOMEBREW_VAR_DIR sorted"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh ensure_homebrew_directory sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_GIT_SAFE_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_VAR_DIRECTORY",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh add_git_safe_directory scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Git safe directory is already set."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh add_git_safe_directory sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_CASK_REPO",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_GIT_SAFE_DIRECTORY",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh manage_cask_repo scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Homebrew is not shallow"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh manage_cask_repo sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "ROSETTA_INSTALLATION_M1",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_CASK_REPO"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /usr/bin/pgrep oahd; fi"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 0
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/sbin/softwareupdate --install-rosetta --agree-to-license"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYTHON_2.7_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "ROSETTA_INSTALLATION_M1"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -V 2>/Users/ltuser/version.txt; cat /Users/ltuser/version.txt; rm /Users/ltuser/version.txt"
+                    ],
+                    "expected_output": "Python 2.7.18",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "curl -o /tmp/python-2.7.18-macosx10.9.pkg https://www.python.org/ftp/python/2.7.18/python-2.7.18-macosx10.9.pkg && chmod 0755 /tmp/python-2.7.18-macosx10.9.pkg && sudo installer -pkg /tmp/python-2.7.18-macosx10.9.pkg -target /"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "PIP_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "PYTHON_2.7_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip --version 2>&1 | grep 'python 2.7'"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "pip"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o /tmp/get-pip.py && /usr/local/bin/python2.7 /tmp/get-pip.py"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "ATOMAC_UNINSTALLATION_PIP",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "PIP_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip show atomac"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 1
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/local/bin/python2.7 -m pip uninstall atomac -y"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYATOMAC_UNINSTALLATION_PIP",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "PIP_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip show pyatomac"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 1
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/local/bin/python2.7 -m pip uninstall pyatomac -y"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "SETUPTOOLS_PIP_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "ATOMAC_UNINSTALLATION_PIP",
+                "PYATOMAC_UNINSTALLATION_PIP"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip show setuptools"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 0
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/local/bin/python2.7 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org setuptools --user"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYOBJCCORE_PIP_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "SETUPTOOLS_PIP_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip show pyobjc-core"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 0
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/local/bin/python2.7 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org pyobjc-core --user"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYOBJC_PIP_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "PYOBJCCORE_PIP_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/local/bin/python2.7 -m pip show pyobjc"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 0
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/local/bin/python2.7 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org pyobjc --user"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "BREW_MANAGER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/brew_manager.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "8d3507a50c0f659bff855a7b0b7d6eb7",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/new/brew_manager.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "MANAGE_HOMEBREW",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "sudo /Users/ltuser/Documents/brew_manager.sh manage_homebrew scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Homebrew is already installed."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "sudo /Users/ltuser/Documents/brew_manager.sh manage_homebrew sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_PATH",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "MANAGE_HOMEBREW",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh configure_path scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Homebrew PATH is already configured in .bash_profile."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh configure_path sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_OWNERSHIP",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_PATH",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh set_ownership scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Owner Permissions are sorted"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh set_ownership sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_OWNERSHIP",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh set_permissions scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "Write Permissions are sorted"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh set_permissions sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_INTEL_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_PERMISSIONS",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh manage_intel_homebrew_permissions scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "All checks passed."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh manage_intel_homebrew_permissions sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HOMEBREW_ARM_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "HOMEBREW_PERMISSIONS",
+                "BREW_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/brew_manager.sh manage_arm_homebrew_permissions scan"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "All checks passed."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/brew_manager.sh manage_arm_homebrew_permissions sync"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYENV_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "PYOBJC_PIP_INSTALLATION",
+                "LTUSER_LIBRARY_PERMISSIONS",
+                "HOMEBREW_INTEL_PERMISSIONS",
+                "HOMEBREW_ARM_PERMISSIONS"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/.bash_profile; brew list | ( grep -q 'pyenv'; ret=$?; cat >/dev/null; exit $ret)"
+                    ],
+                    "run_as_root": false,
+                    "exit_code": 0
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile; brew install pyenv"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYENV_BASH_PROFILE_CONFIGURATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "PYENV_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "grep -qxF 'eval \"$(pyenv init --path)\"' /Users/ltuser/.bash_profile && grep -qxF 'eval \"$(pyenv init -)\"' /Users/ltuser/.bash_profile || echo 'pyenv init missing'"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": ""
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "echo 'eval \"$(pyenv init --path)\"' >> /Users/ltuser/.bash_profile; echo 'eval \"$(pyenv init -)\"' >> /Users/ltuser/.bash_profile"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "Install_AWSCLI_V2",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "PYTHON_2.7_INSTALLATION"
+            ],
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/aws --version; elif [[ $arch == 'x86_64' ]]; then /usr/local/bin/aws --version; fi"
+                    ],
+                    "expected_output": "aws-cli",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install awscli && brew link --overwrite awscli"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "CARTHAGE_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "Install_AWSCLI_V2"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/carthage version; else /usr/local/bin/carthage version; fi;"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "0.39.1"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install carthage &>/dev/null; brew link carthage &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "CARTHAGE_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "CARTHAGE_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/carthage ]; then echo 'Carthage is installed'; else echo 'Carthage installation required'; fi"
+                    ],
+                    "expected_output": "Carthage is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/carthage /usr/local/bin/carthage && chown ltuser:staff /usr/local/bin/carthage && chmod 0777 /usr/local/bin/carthage; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "GIT_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "CARTHAGE_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/git version; else /usr/local/bin/git version; fi;"
+                    ],
+                    "expected_output": "git version",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install git &>/dev/null; brew link git &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "GIT_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "GIT_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/git ]; then echo 'Git is installed'; else echo 'Git installation required'; fi"
+                    ],
+                    "expected_output": "Git is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/git /usr/local/bin/git && chown ltuser:staff /usr/local/bin/git && chmod 0777 /usr/local/bin/git; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "OPENSSL_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "GIT_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/openssl -h; else /usr/local/bin/openssl -h; fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install openssl &>/dev/null; brew link --overwrite openssl &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "OPENSSL_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "OPENSSL_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/openssl ]; then echo 'OpenSSL is installed'; else echo 'OpenSSL installation required'; fi"
+                    ],
+                    "expected_output": "OpenSSL is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/openssl /usr/local/bin/openssl && chown ltuser:staff /usr/local/bin/openssl && chmod 0777 /usr/local/bin/openssl; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "CPULIMIT_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "OPENSSL_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/cpulimit -h; else /usr/local/bin/cpulimit -h; fi;"
+                    ],
+                    "expected_output": "Usage: cpulimit",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install cpulimit &>/dev/null; brew link cpulimit &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "CPULIMIT_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "CPULIMIT_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/cpulimit ]; then echo 'CPUlimit is installed'; else echo 'CPUlimit installation required'; fi"
+                    ],
+                    "expected_output": "CPUlimit is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/cpulimit /usr/local/bin/cpulimit && chown ltuser:staff /usr/local/bin/cpulimit && chmod 0777 /usr/local/bin/cpulimit; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "HTOP_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "CPULIMIT_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/htop --version; else /usr/local/bin/htop --version; fi;"
+                    ],
+                    "expected_output": "htop 3.3.0",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install htop &>/dev/null; brew link htop &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "HTOP_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "HTOP_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/htop ]; then echo 'Htop is installed'; else echo 'Htop installation required'; fi"
+                    ],
+                    "expected_output": "Htop is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/htop /usr/local/bin/htop && chown ltuser:staff /usr/local/bin/htop && chmod 0777 /usr/local/bin/htop; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "SSHPASS_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "HTOP_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/sshpass -V; else /usr/local/bin/sshpass -V; fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install sshpass &>/dev/null; brew link --overwrite sshpass &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "SSHPASS_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "SSHPASS_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/sshpass ]; then echo 'SSHPass is installed'; else echo 'SSHPass installation required'; fi"
+                    ],
+                    "expected_output": "SSHPass is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/sshpass /usr/local/bin/sshpass && chown ltuser:staff /usr/local/bin/sshpass && chmod 0777 /usr/local/bin/sshpass; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "SWITCHAUDIOSOURCE_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "SSHPASS_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/switchaudiosource; else /usr/local/bin/switchaudiosource; fi;"
+                    ],
+                    "expected_output": "Please specify audio device.",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install switchaudio-osx &>/dev/null; brew link switchaudio-osx &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "SWITCHAUDIOSOURCE_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "SWITCHAUDIOSOURCE_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/switchaudiosource ]; then echo 'SWITCHAUDIOSOURCE is installed'; else echo 'SWITCHAUDIOSOURCE installation required'; fi"
+                    ],
+                    "expected_output": "SWITCHAUDIOSOURCE is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/switchaudiosource /usr/local/bin/switchaudiosource && chown ltuser:staff /usr/local/bin/switchaudiosource && chmod 0777 /usr/local/bin/switchaudiosource; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "SUDOERS_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/etc/sudoers",
+                "perms": "0440",
+                "owner": "root",
+                "group": "wheel",
+                "md5sum": "2023e259d7ce20cfa9174b17713d2c56",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/sudoers",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "BLACKHOLE_2CH_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "SWITCHAUDIOSOURCE_INSTALLATION",
+                "SUDOERS_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'blackhole-2ch'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'blackhole-2ch'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && echo -e \"$PASSWORD\" | brew install blackhole-2ch &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "BLACKHOLE_16CH_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "BLACKHOLE_2CH_INSTALLATION",
+                "SUDOERS_DOWNLOAD"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'blackhole-16ch'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'blackhole-16ch'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && echo -e \"$PASSWORD\" | brew install blackhole-16ch &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "JQ_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "BLACKHOLE_16CH_INSTALLATION"
+            ],
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/.bash_profile && if jq --version > /dev/null 2>&1; then echo 'jq is installed'; else echo 'jq installation required'; fi"
+                    ],
+                    "expected_output": "jq is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install jq"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "CSCREEN_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "JQ_INSTALLATION"
+            ],
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/cscreen -h; else /usr/local/bin/cscreen -h; fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install cscreen && brew link --overwrite cscreen"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "BLUEUTIL_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "JQ_INSTALLATION"
+            ],
+            "sync_interval": "6h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/blueutil -version; else /usr/local/bin/blueutil -version; fi;"
+                    ],
+                    "expected_output": "2",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install blueutil &>/dev/null; brew link blueutil &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "BLUEUTIL_LINK",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "BLUEUTIL_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -x /usr/local/bin/blueutil ]; then echo 'Blueutil is installed'; else echo 'Blueutil installation required'; fi"
+                    ],
+                    "expected_output": "Blueutil is installed",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then ln -sfn /opt/homebrew/bin/blueutil /usr/local/bin/blueutil && chown ltuser:staff /usr/local/bin/blueutil && chmod 0777 /usr/local/bin/blueutil; fi;"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LIBVPX_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "BLUEUTIL_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'libvpx'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'libvpx'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install libvpx &>/dev/null; brew link libvpx &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "X264_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LIBVPX_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'x264'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'x264'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install x264 &>/dev/null; brew link x264 &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "READLINE_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "X264_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'readline'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'readline'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install readline &>/dev/null; brew link readline &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "SQLITE3_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "READLINE_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'sqlite'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'sqlite'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install sqlite3 &>/dev/null; brew link sqlite3 &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "XZ_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "SQLITE3_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'xz'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'xz'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install xz &>/dev/null; brew link xz &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "ZLIB_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XZ_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'zlib'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'zlib'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install zlib &>/dev/null; brew link zlib &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "TCL_TK_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "ZLIB_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'tcl-tk'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'tcl-tk'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install tcl-tk &>/dev/null; brew link tcl-tk &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "POPPLER_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "TCL_TK_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "arch=$(uname -m); if [[ $arch == 'arm64' ]]; then /opt/homebrew/bin/brew list | ( grep -q 'poppler'; ret=$?; cat >/dev/null; exit $ret); else /usr/local/bin/brew list | ( grep -q 'poppler'; ret=$?; cat >/dev/null; exit $ret); fi;"
+                    ],
+                    "exit_code": 0,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && brew install poppler &>/dev/null; brew link --overwrite poppler &>/dev/null;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "PYTHON_3.10_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "PYENV_INSTALLATION",
+                "PYENV_BASH_PROFILE_CONFIGURATION",
+                "OPENSSL_INSTALLATION",
+                "READLINE_INSTALLATION",
+                "SQLITE3_INSTALLATION",
+                "XZ_INSTALLATION",
+                "ZLIB_INSTALLATION",
+                "TCL_TK_INSTALLATION"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/.pyenv/versions/3.10.2 ]; then echo 'Python 3.10 exists'; else echo 'Python 3.10 does not exist'; fi"
+                    ],
+                    "expected_output": "Python 3.10 exists",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile; pyenv install 3.10.2"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "NVM_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/.nvm ] && [ $(stat -f '%Su' /Users/ltuser/.nvm) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/.nvm) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/.nvm) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "expected_output": "all checks pass",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "mkdir -p /Users/ltuser/.nvm && chown ltuser:staff /Users/ltuser/.nvm && chmod 755 /Users/ltuser/.nvm"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "NVM_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NVM_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -s /Users/ltuser/.nvm/nvm.sh ]; then source /Users/ltuser/.nvm/nvm.sh; elif [ -s /Users/ltuser/.bash_profile ]; then source /Users/ltuser/.bash_profile; elif [ -s /Users/ltuser/.zshrc ]; then source /Users/ltuser/.zshrc; fi; nvm --version || echo 'nvm not found'"
+                    ],
+                    "expected_output": "0.39.1"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh > /tmp/install_nvm.sh && bash /tmp/install_nvm.sh"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NVM_PROFILE",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NVM_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if grep -q 'export NVM_DIR=\"$HOME/.nvm\"' /Users/ltuser/.bash_profile && grep -q '\\[ -s \"$NVM_DIR/nvm.sh\" \\] && \\\\. \"$NVM_DIR/nvm.sh\"' /Users/ltuser/.bash_profile && grep -q '\\[ -s \"$NVM_DIR/bash_completion\" \\] && \\\\. \"$NVM_DIR/bash_completion\"' /Users/ltuser/.bash_profile; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "echo 'export NVM_DIR=\"$HOME/.nvm\"' >> /Users/ltuser/.bash_profile; echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"  # This loads nvm' >> /Users/ltuser/.bash_profile; echo '[ -s \"$NVM_DIR/bash_completion\" ] && \\. \"$NVM_DIR/bash_completion\"  # This loads nvm bash_completion' >> /Users/ltuser/.bash_profile"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_WEBRTC_INTERACTION_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_WEBRTC_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/webrtc-streamer/interaction ] && [ $(stat -f '%Su' /Users/ltuser/lrc/webrtc-streamer/interaction) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/webrtc-streamer/interaction) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/webrtc-streamer/interaction) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/webrtc-streamer/interaction' ] && rm '/Users/ltuser/lrc/webrtc-streamer/interaction';mkdir -p /Users/ltuser/lrc/webrtc-streamer/interaction && chown -R ltuser:staff /Users/ltuser/lrc/webrtc-streamer/interaction && chmod 0755 /Users/ltuser/lrc/webrtc-streamer/interaction"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda ] && [ $(stat -f '%Su' /Users/ltuser/lambda) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda' ] && rm '/Users/ltuser/lambda';mkdir -p /Users/ltuser/lambda && chown -R ltuser:staff /Users/ltuser/lambda && chmod 0755 /Users/ltuser/lambda"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_SHARED_TOOLS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LAMBDA_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda/shared-tools ] && [ $(stat -f '%Su' /Users/ltuser/lambda/shared-tools) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda/shared-tools) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda/shared-tools) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda/shared-tools' ] && rm '/Users/ltuser/lambda/shared-tools';mkdir -p /Users/ltuser/lambda/shared-tools && chown -R ltuser:staff /Users/ltuser/lambda/shared-tools && chmod 0755 /Users/ltuser/lambda/shared-tools"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_SHARED_TOOLS_VOLUME_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LAMBDA_SHARED_TOOLS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda/shared-tools/volume ] && [ $(stat -f '%Su' /Users/ltuser/lambda/shared-tools/volume) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda/shared-tools/volume) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda/shared-tools/volume) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda/shared-tools/volume' ] && rm '/Users/ltuser/lambda/shared-tools/volume';mkdir -p /Users/ltuser/lambda/shared-tools/volume && chown -R ltuser:staff /Users/ltuser/lambda/shared-tools/volume && chmod 0755 /Users/ltuser/lambda/shared-tools/volume"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        
+        {
+            "name": "LAMBDA_SHARED_TOOLS_VOLUME_APPIUM_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LAMBDA_SHARED_TOOLS_VOLUME_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda/shared-tools/volume/appium ] && [ $(stat -f '%Su' /Users/ltuser/lambda/shared-tools/volume/appium) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda/shared-tools/volume/appium) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda/shared-tools/volume/appium) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda/shared-tools/volume/appium' ] && rm '/Users/ltuser/lambda/shared-tools/volume/appium';mkdir -p /Users/ltuser/lambda/shared-tools/volume/appium && chown -R ltuser:staff /Users/ltuser/lambda/shared-tools/volume/appium && chmod 0755 /Users/ltuser/lambda/shared-tools/volume/appium"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_WEBRTC_INTERACTION_ROBOTJS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_WEBRTC_INTERACTION_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/webrtc-streamer/interaction/robot.js",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "2f9baeb2e794dfa5a85af8659b6c177d",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/webrtc/interaction/robot.js",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_WEBRTC_INTERACTION_VERSION",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_WEBRTC_INTERACTION_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/webrtc-streamer/interaction/version.info",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "66921bbe693499728a760d17eeb9aa25",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/webrtc/interaction/version.info",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_WEBRTC_INTERACTION_JSON",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_WEBRTC_INTERACTION_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/webrtc-streamer/interaction/package.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "deef88916d0efc85aa3c639c403a9e7d",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/webrtc/interaction/package.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_SCRIPTS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_LOGS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/logs"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_CLEANUP_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_CLEANUP_APPLE_SCRIPT_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_CLEANUP_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/apple-script"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_CLEANUP_LOGS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_CLEANUP_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/cleanup/logs"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLENSURLSESSIONWEBSOCKET_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLEPREVENTCROSSSITETRACKING_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking ] && [ $(stat -f '%Su' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking' ] && rm '/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking';mkdir -p /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking && chown -R ltuser:staff /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking && chmod 0755 /Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_LAMBDA_SELENIUM_JAR",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/lambda-selenium.jar",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "9673a0bb369d4c2285a984aed3741254",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/lambda-selenium.jar",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_CUSTOM_SUPPORT_FILE",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/custom_support_file.js",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "869af3f87d3a8b369e64118b7f72f1ce",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/custom_support_file.js",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASE_REPORTER_CONFIG",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/base_reporter_config.json",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "ebe9450476d5064467390adf543c54be",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/base_reporter_config.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_CYPRESS_CONFIG_TEMPLATE",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/cypress_config_template.json",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "178ef9cb5e604ff4855398888596c10b",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/cypress_config_template.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_WRAPPER_DAILY_SANITY",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/wrapper_daily_sanity.sh",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "c3642044c8ad112f3f3592e4550742d0",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/bash-scripts/wrapper_daily_sanity.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_WRAPPER_LNRC_DEPLOY",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/wrapper_lnrc_deploy.sh",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "1ca7b4328cde5cec9e76eeb98610aa76",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/bash-scripts/wrapper_lnrc_deploy.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LTSECURITY_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LRC_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc/LTSECURITY ] && [ $(stat -f '%Su' /Users/ltuser/lrc/LTSECURITY) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc/LTSECURITY) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc/LTSECURITY) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc/LTSECURITY' ] && rm '/Users/ltuser/lrc/LTSECURITY';mkdir -p /Users/ltuser/lrc/LTSECURITY && chown -R ltuser:staff /Users/ltuser/lrc/LTSECURITY && chmod 0755 /Users/ltuser/lrc/LTSECURITY"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_LTSECURITY_RESTRICT_WRAPPER",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LTSECURITY_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/LTSECURITY/restrict_wrapper.sh",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "1a7889646cd8c56cdd7148a2b6b0d445",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/LTSECURITY/restrict_wrapper.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_SCRIPTS_VERIFY_IOS_TOOLS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_SCRIPTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios-scripts/verify-ios-tools.sh",
+                "perms": "0744",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "359b67525e5fc258ca40a0401ab169e3",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/lambda-node-remote-client/bash-scripts/ios-scripts/verify-ios-tools.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_VIEW_CONTROLLER",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/ViewController.swift",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "cb91bd369f7d64bb2f95c2f8ae4f076d",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/ViewController.swift",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_APPDELEGATE",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/AppDelegate.swift",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "5e0258d467f8e52431837443ca6d6f16",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/AppDelegate.swift",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_INFOPLIST",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Info.plist",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "d6e5f7bc7d27904e3c12c02b0d81f911",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Info.plist",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_SCENEDELEGATE",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/SceneDelegate.swift",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "7a655c2dbd98ea1e6e979dc2030b8cb7",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/SceneDelegate.swift",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_ASSETSCONTENTS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Assets.xcassets/Contents.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "9deb2ada1cc834bbebf8bbad9c8978a1",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Assets.xcassets/Contents.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_APPICONCONTENTS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Assets.xcassets/AppIcon.appiconset/Contents.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "6297129bdc97b79682cdc8e128c0c666",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Assets.xcassets/AppIcon.appiconset/Contents.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_ACCENTCOLORCONTENTS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Assets.xcassets/AccentColor.colorset/Contents.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "55019f7265dde0a78318b0807f98e847",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Assets.xcassets/AccentColor.colorset/Contents.json",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_LAUNCHSCREEN",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Base.lproj/LaunchScreen.storyboard",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "f26e11d0d802e78de9c6f8f9204a7104",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Base.lproj/LaunchScreen.storyboard",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_STORYBOARD",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking/Base.lproj/Main.storyboard",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "63ad171df1037bb5dee5035893b45f8a",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking/Base.lproj/Main.storyboard",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_PROJECT",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/project.pbxproj",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "a7922d1abe63e5e3b68a113cca90b201",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/project.pbxproj",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_BREAKPOINTS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/xcuserdata/satyam.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "b52c98cacb99bf604ee8a9a3d3132c0e",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/xcuserdata/satyam.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_XCSCHEMEMANAGEMENT",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/xcuserdata/satyam.xcuserdatad/xcschemes/xcschememanagement.plist",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "dd45d175eaf9a2e71d7bddf73395b3fb",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/xcuserdata/satyam.xcuserdatad/xcschemes/xcschememanagement.plist",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_XCWORKSPACEDATA",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "a54b6450d65c401d48911394f6a65bd2",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_USERINTERFACESTATE",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/xcuserdata/satyam.xcuserdatad/UserInterfaceState.xcuserstate",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "1c5916da75b295552aaaa95ff3c2ac04",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/xcuserdata/satyam.xcuserdatad/UserInterfaceState.xcuserstate",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_IDEWORKSPACECHECKS",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "117105d2f2ee718eb485a07574a219b6",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_TOGGLENSURLSESSIONWEBSOCKET",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/toggleNSURLSessionWebSocket.xcscheme",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "46b64824b2aadd60f0267598f35c8798",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/toggleNSURLSessionWebSocket.xcscheme",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_XCSCHEME",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/PreventCrossSiteTracking.xcscheme",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "332a5136b7fc21ae16330da6e49f073f",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/PreventCrossSiteTracking.xcscheme",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_TOGGLEXCSCHEME",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_PREVENTCROSSSITETRACKING.XCODEPROJ_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/togglePreventCrossSiteTracking.xcscheme",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "141b94792584390a9c4fff78b6d9ee96",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/PreventCrossSiteTracking.xcodeproj/xcshareddata/xcschemes/togglePreventCrossSiteTracking.xcscheme",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLENSURLSESSIONWEBSOCKET_SWIFT",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLENSURLSESSIONWEBSOCKET_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/toggleNSURLSessionWebSocket/toggleNSURLSessionWebSocket.swift",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "83e467a3276b0dc760cf51284ec7be98",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/toggleNSURLSessionWebSocket/toggleNSURLSessionWebSocket.swift",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLEPREVENTCROSSSITETRACKING_SWIFT",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LRC_LAMBDA_NODE_REMOTE_CLIENT_BASH_SCRIPTS_IOS_TOGGLEPREVENTCROSSSITETRACKING_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lrc/lambda-node-remote-client/bash-scripts/ios/togglePreventCrossSiteTracking/togglePreventCrossSiteTracking.swift",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "d433cf086c0e1e065f2531c5585ba5d5",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/automation/utilities/ios/togglePreventCrossSiteTracking/togglePreventCrossSiteTracking.swift",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LNRC_DEPLOY_MANAGER",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/Documents/lnrc_deploy.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "c20473f45b20c0a748fa62b30e5cdffb",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/lnrc_deploy.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_LNRC",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+                "VENTURA_PERMISSIONS_HANDLER",
+                "ENV_FILE_MANAGEMENT",
+                "LNRC_DEPLOY_MANAGER"
+            ],
+            "is_sync_enabled": true,
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/Documents/lnrc_deploy.sh scan ventura"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "LNRC is up-to-date."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/Documents/lnrc_deploy.sh sync ventura"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "ENV_MANAGER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+                "PLISTS_LNRC"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/Documents/manage_env.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "6e2773eb592a0881dceab7176d9e9285",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/manage_env.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "ENV_FILE_MANAGEMENT",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+                "PLISTS_LNRC",
+                "ENV_MANAGER_SCRIPT_DOWNLOAD"
+            ],
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/Documents/manage_env.sh scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "All checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/Documents/manage_env.sh sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda ] && [ $(stat -f '%Su' /Users/ltuser/lambda) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda' ] && rm '/Users/ltuser/lambda';mkdir -p /Users/ltuser/lambda && chown -R ltuser:staff /Users/ltuser/lambda && chmod 0755 /Users/ltuser/lambda"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LRC_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lrc ] && [ $(stat -f '%Su' /Users/ltuser/lrc) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lrc) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lrc) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lrc' ] && rm '/Users/ltuser/lrc';mkdir -p /Users/ltuser/lrc && chown -R ltuser:staff /Users/ltuser/lrc && chmod 0755 /Users/ltuser/lrc"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_SIM",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LAMBDA_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/lambda/sim",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "f5fd574a77aa71527bf83e05dc966aaf",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/binaries/sim",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "MARTIAN_DEPLOY_MANAGER",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/Documents/martian_deploy.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "e56030f3304e6530f34475fe084629ef",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/martian_deploy.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "LAMBDA_DIRECTORY"
+            ],
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda/lambda-node-remote-client ] && [ $(stat -f '%Su' /Users/ltuser/lambda/lambda-node-remote-client) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/lambda/lambda-node-remote-client) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/lambda/lambda-node-remote-client) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/lambda/lambda-node-remote-client' ] && rm '/Users/ltuser/lambda/lambda-node-remote-client';mkdir -p /Users/ltuser/lambda/lambda-node-remote-client && chown -R ltuser:staff /Users/ltuser/lambda/lambda-node-remote-client && chmod 0755 /Users/ltuser/lambda/lambda-node-remote-client"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_MARTIAN",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "sync_interval": "30m",
+            "depends_on": [
+                "LAMBDA_LAMBDA_NODE_REMOTE_CLIENT_DIRECTORY",
+                "PLISTS_LNRC",
+                "ENV_FILE_MANAGEMENT",
+                "MARTIAN_DEPLOY_MANAGER"
+            ],
+            "is_sync_enabled": true,
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/Documents/martian_deploy.sh scan ventura"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "MARTIAN is up-to-date."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/Documents/martian_deploy.sh sync ventura"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "LAUNCHAGENTS_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/Library/LaunchAgents ] && [ $(stat -f '%Su' /Users/ltuser/Library/LaunchAgents) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/Library/LaunchAgents) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/Library/LaunchAgents) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "[ -f '/Users/ltuser/Library/LaunchAgents' ] && rm '/Users/ltuser/Library/LaunchAgents';mkdir -p /Users/ltuser/Library/LaunchAgents && chown -R ltuser:staff /Users/ltuser/Library/LaunchAgents && chmod 0755 /Users/ltuser/Library/LaunchAgents"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "PLISTS_LNRC",
+            "type": "FILE",
+            "is_zdt": true,
+            "sync_interval": "24h",
+            "depends_on": [
+                "LAUNCHAGENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "file": {
+                "path": "/Users/ltuser/Library/LaunchAgents/com.lambda.lnrc.plist",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "4fcb2e6e170b54ba29974c30b1b75974",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lrc/plists/com.lambda.lnrc.plist",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "APPIUM_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY",
+                "LAMBDA_SHARED_TOOLS_VOLUME_APPIUM_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/appium_manager.py",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "e7bf5055e719f7bc047926b6885aae3c",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/appium_manager.py",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "APPIUM_DOWNLOADER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "APPIUM_HANDLER_SCRIPT_DOWNLOAD"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/appium_manager.py handler ventura scan 2>&1"
+                    ],
+                    "expected_output": "All Appium versions and appium-latest symlink for ventura are present and complete.",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/appium_manager.py handler ventura sync 2>&1"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "APPIUM_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "APPIUM_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "10m",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/appium_manager.py permission ventura scan 2>&1"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "All directories have correct permissions"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/appium_manager.py permission ventura sync 2>&1"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "APPIUM_CLEANUP",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/appium_manager.py cleaner ventura scan 2>&1"
+                    ],
+                    "run_as_root": true,
+                    "expected_output": "No extra Appium versions or zip files found for template ventura."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/appium_manager.py cleaner ventura sync 2>&1"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "XCUITEST_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/xcuitest_manager.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "35f60836a9aa1dacd87ec65abca2cc28",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/xcuitest_manager.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "NVM_DIRECTORY",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/.nvm ] && [ $(stat -f '%Su' /Users/ltuser/.nvm) = 'ltuser' ] && [ $(stat -f '%Sg' /Users/ltuser/.nvm) = 'staff' ] && [ $(stat -f '%Lp' /Users/ltuser/.nvm) = '755' ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "expected_output": "all checks pass",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "mkdir -p /Users/ltuser/.nvm && chown ltuser:staff /Users/ltuser/.nvm && chmod 755 /Users/ltuser/.nvm"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "NVM_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NVM_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -s /Users/ltuser/.nvm/nvm.sh ]; then source /Users/ltuser/.nvm/nvm.sh; elif [ -s /Users/ltuser/.bash_profile ]; then source /Users/ltuser/.bash_profile; elif [ -s /Users/ltuser/.zshrc ]; then source /Users/ltuser/.zshrc; fi; nvm --version || echo 'nvm not found'"
+                    ],
+                    "expected_output": "0.39.1"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh > /tmp/install_nvm.sh && bash /tmp/install_nvm.sh"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_INSTALL_16",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NVM_INSTALLATION",
+                "NVM_PROFILE"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "cd /Users/ltuser/; source .bash_profile; if nvm list | grep -q 'v16.18.1'; then echo 'found'; else echo 'missing'; fi"
+                    ],
+                    "expected_output": "found"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "cd /Users/ltuser/;source .bash_profile; nvm install v16.18.1;"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_LINKS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NODE_INSTALL_16"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "all_found=true; for item in node npm npx; do if [ -L /usr/local/bin/$item ] && [ \"$(readlink /usr/local/bin/$item)\" = \"/Users/ltuser/.nvm/versions/node/v16.18.1/bin/$item\" ]; then :; else all_found=false; break; fi; done; if [ \"$all_found\" = true ]; then echo \"all links correct\"; else echo \"sync required\"; fi"
+                    ],
+                    "expected_output": "all links correct",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "for item in node npm npx; do ln -sf /Users/ltuser/.nvm/versions/node/v16.18.1/bin/$item /usr/local/bin/$item; done"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_PROFILE",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NODE_LINKS"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "source /Users/ltuser/.bash_profile; if [[ \":$PATH:\" == *\":/Users/ltuser/.nvm/versions/node/v16.18.1/bin:\"* ]]; then echo 'all paths correct'; else echo 'sync required'; fi"
+                    ],
+                    "expected_output": "all paths correct"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "grep -q 'export PATH=/Users/ltuser/.nvm/versions/node/v16.18.1/bin:$PATH' /Users/ltuser/.bash_profile || echo 'export PATH=/Users/ltuser/.nvm/versions/node/v16.18.1/bin:$PATH' >> /Users/ltuser/.bash_profile"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_PATH_CORRECTOR",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NODE_PROFILE"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [[ $PATH == *'/Users/ltuser/.nvm/versions/node/v18.18.2/bin'* ]]; then echo 'fail'; else echo 'pass'; fi"
+                    ],
+                    "expected_output": "pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "sed -i '' 's|/Users/ltuser/.nvm/versions/node/v18.18.2/bin:||' ~/.bash_profile && export PATH=$(echo $PATH | sed 's|/Users/ltuser/.nvm/versions/node/v18.18.2/bin:||')"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_SELECTOR",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NODE_PATH_CORRECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "node",
+                    "args": [
+                        "-v"
+                    ],
+                    "expected_output": "v16.18.1"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && nvm use v16.18.1"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "XCUITEST_INSTALLATION_1.22.1",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "XCUITEST_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "APPIUM_PERMISSIONS",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 1.22.1 -x 5.3.0 -m scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "All checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 1.22.1 -x 5.3.0 -m sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "XCUITEST_INSTALLATION_1.22.3",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "XCUITEST_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "APPIUM_PERMISSIONS",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 1.22.3 -x 5.6.0 -m scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "All checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 1.22.3 -x 5.6.0 -m sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "XCUITEST_INSTALLATION_2.0.0",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "XCUITEST_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_CLEANUP",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 2.0.0 -x 5.12.1 -m scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "All checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/xcuitest_manager.sh -a 2.0.0 -x 5.12.1 -m sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "NODE_PACKAGE_MANAGER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "XCUITEST_INSTALLATION_2.0.0",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/node_modules ] && [ -d /Users/ltuser/.appium ]; then echo 'all checks pass'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "all checks pass"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile nvm use v16.18.1 && cd /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/ && npm ci"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": ".APPIUM_PERMISSIONS",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "NODE_PACKAGE_MANAGER",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ $(stat -f '%Su' /Users/ltuser/.appium) = ltuser ] && [ $(stat -f '%Sg' /Users/ltuser/.appium) = staff ]; then echo 'permissions correct'; else echo 'sync required'; fi"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "permissions correct"
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "chown -R ltuser:staff /Users/ltuser/.appium"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": ".APPIUM_DRIVER_INSTALLATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                ".APPIUM_PERMISSIONS",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "cd /Users/ltuser/.appium; source /Users/ltuser/.bash_profile; npm ls --all | grep missing > /Users/ltuser/info.txt; cat /Users/ltuser/info.txt; rm /Users/ltuser/info.txt"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": ""
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "source /Users/ltuser/.bash_profile && nvm use v16.18.1 && cd /Users/ltuser/.appium/ && npm i"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "APPIUM_1.22.1_PACKAGE_JSON_CHECK",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_1.22.1"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.1/package.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "aa784de1e46d96ac4a62f82c15ee523e",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/appium/appium-1.22.1/ventura/package.json",
+                "verification_status": "success"
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "cd /Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.1/; source /Users/ltuser/.bash_profile; nvm use v16; npm i; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.1/build/Build"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": "APPIUM_1.22.3_PACKAGE_JSON_CHECK",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_1.22.3"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.3/package.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "1e9e18fb0b71d8a0b1b7250daebfceb1",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/appium/appium-1.22.3/ventura/package.json",
+                "verification_status": "success"
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "cd /Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.3/; source /Users/ltuser/.bash_profile; nvm use v16; npm i; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-1.22.3/build/Build"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": "APPIUM_2.0.0_PACKAGE_JSON_CHECK",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_2.0.0"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/package.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "cb699466937a6a4df098727f11fbbfb9",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/appium/appium-2.0.0/ventura/package.json",
+                "verification_status": "success"
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "cd /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/; source /Users/ltuser/.bash_profile; nvm use v16; npm i; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/build/Build"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": "APPIUM_2.1.3_PACKAGE_JSON_CHECK",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_2.0.0"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/lambda/shared-tools/volume/appium/appium-2.1.3/package.json",
+                "perms": "0755",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "0dace2172a87f94e9ddca2f619f4cb74",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/appium/appium-2.1.3/ventura/package.json",
+                "verification_status": "success"
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "cd /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.1.3/; source /Users/ltuser/.bash_profile; nvm use v16; rm -rf node_modules; npm i; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.1.3/build/Build"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": ".APPIUM_PACKAGE_JSON_CHECK",
+            "type": "FILE",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "depends_on": [
+                "APPIUM_DOWNLOADER",
+                ".APPIUM_PERMISSIONS",
+                ".APPIUM_DRIVER_INSTALLATION",
+                "XCUITEST_INSTALLATION_2.0.0"
+            ],
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/.appium/package.json",
+                "perms": "0666",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "254d351fb7102537e0cb054a91b66c77",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/lambdatest/rough-book-of-lt/common/appium/.appium/ventura/package.json",
+                "verification_status": "success"
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "cd /Users/ltuser/.appium/; source /Users/ltuser/.bash_profile; nvm use v16; rm -rf node_modules; npm i; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.1.3/build/Build; rm -rf /Users/ltuser/lambda/shared-tools/volume/appium/appium-2.0.0/build/Build"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": "RUNTIME_DIRECTORY_CREATION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Library/Developer/CoreSimulator/Profiles/Runtimes/ ]; then echo 'Directory exists'; else echo 'Directory does not exist'; fi"
+                    ],
+                    "expected_output": "Directory exists",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "mkdir -p /Library/Developer/CoreSimulator/Profiles/Runtimes/"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "LTUSER_RUNTIME_CLEANUP",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "if [ -d /Users/ltuser/Library/Developer/CoreSimulator/Profiles/Runtimes ]; then echo 'Directory exists'; else echo 'Directory does not exist'; fi"
+                    ],
+                    "expected_output": "Directory does not exist",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "rm -rf /Users/ltuser/Library/Developer/CoreSimulator/Profiles/Runtimes"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "RUNTIME_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "LTUSER_RUNTIME_CLEANUP",
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/runtime_manager.py",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "6a42cbdb699762a966b5ce4c8d4640c4",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/new/runtime_manager.py",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "RUNTIME_MISSING_HANDLER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "RUNTIME_HANDLER_SCRIPT_DOWNLOAD",
+                "PYTHON_3.10_INSTALLATION",
+                "XCODE_MANAGER",
+                "RUNTIME_DIRECTORY_CREATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/runtime_manager.py ventura runtime_scan 2>&1"
+                    ],
+                    "expected_output": "All required runtimes are installed.",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/runtime_manager.py ventura runtime_sync 2>&1"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "ROOT_RUNTIME_CLEANER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "RUNTIME_HANDLER_SCRIPT_DOWNLOAD",
+                "PYTHON_3.10_INSTALLATION",
+                "XCODE_MANAGER",
+                "RUNTIME_MISSING_HANDLER"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/runtime_manager.py ventura cleanup_scan 2>&1"
+                    ],
+                    "expected_output": "No cleanup needed.",
+                    "run_as_root": true
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/runtime_manager.py ventura cleanup_sync 2>&1"
+                        ],
+                        "run_as_root": true
+                    }
+                }
+            }
+        },
+        {
+            "name": "DEVICES_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "depends_on": [
+                "XCODE_MANAGER",
+                "RUNTIME_MISSING_HANDLER",
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/devices.py",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "3d38e2540781ea72244dcb75b74be452",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/devices.py",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "DEVICES_MISSING_HANDLER_16.0",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "DEVICES_HANDLER_SCRIPT_DOWNLOAD",
+                "RUNTIME_MISSING_HANDLER"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "90m",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/devices.py --ios-version=16.0 --compare"
+                    ],
+                    "expected_output": "No devices are missing. All devices are up to date.",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/devices.py --ios-version=16.0 --compare --sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "UNAVAILABLE_DEVICES_DELETION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "ROOT_RUNTIME_CLEANER",
+                "LTUSER_RUNTIME_CLEANUP",
+                "RUNTIME_MISSING_HANDLER",
+                "POST_XCODE_HANDLER_SCRIPT_DOWNLOAD",
+                "XCODE_MANAGER",
+                "DEVICES_MISSING_HANDLER_16.0"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "/usr/bin/xcrun simctl list devices | ( grep -q 'Unavailable'; ret=$?; cat >/dev/null; exit $ret)"
+                    ],
+                    "exit_code": 1,
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "/usr/bin/xcrun simctl delete unavailable"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            },
+            "post_sync": {
+                "command": "bash",
+                "args": [
+                    "-c",
+                    "bash /Users/ltuser/Documents/post_xcode_manager.sh"
+                ],
+                "run_as_root": false
+            }
+        },
+        {
+            "name": "DEVICES_BOOTUP_HANDLER",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "DEVICES_MISSING_HANDLER_16.0",
+                "UNAVAILABLE_DEVICES_DELETION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/devices.py --boot"
+                    ],
+                    "expected_output": "All devices have been booted.",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/devices.py --boot --sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "DUPLICATE_DEVICES_DELETION",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "DEVICES_BOOTUP_HANDLER",
+                "UNAVAILABLE_DEVICES_DELETION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "python3 /Users/ltuser/Documents/devices.py --delete_duplicates"
+                    ],
+                    "expected_output": "No duplicate devices found.",
+                    "run_as_root": false
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "python3 /Users/ltuser/Documents/devices.py --delete_duplicates --sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "WDA_HANDLER_SCRIPT_DOWNLOAD",
+            "type": "FILE",
+            "is_zdt": true,
+            "depends_on": [
+                "DOCUMENTS_DIRECTORY"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "file": {
+                "path": "/Users/ltuser/Documents/wda_manager.sh",
+                "perms": "0777",
+                "owner": "ltuser",
+                "group": "staff",
+                "md5sum": "656b2d3aca30518a4c22ab12f3043888",
+                "url": "https://stage-magicleap-mac-directory.lambdatestinternal.com/reconciler-scripts/old/wda_manager.sh",
+                "verification_status": "success"
+            }
+        },
+        {
+            "name": "WDA_HANDLER_APPIUM_1.22.1",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "WDA_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_1.22.1",
+                "NODE_PACKAGE_MANAGER",
+                ".APPIUM_PERMISSIONS",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/wda_manager.sh appium-1.22.1 scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "[INFO] Valid build for appium-1.22.1."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/wda_manager.sh appium-1.22.1 sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "WDA_HANDLER_APPIUM_1.22.3",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "WDA_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_1.22.3",
+                "NODE_PACKAGE_MANAGER",
+                ".APPIUM_PERMISSIONS",
+                "NODE_SELECTOR"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/wda_manager.sh appium-1.22.3 scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "[INFO] Valid build for appium-1.22.3."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/wda_manager.sh appium-1.22.3 sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "WDA_HANDLER_APPIUM_2.0.0",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "WDA_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_2.0.0",
+                "NODE_PACKAGE_MANAGER",
+                "NODE_SELECTOR",
+                ".APPIUM_DRIVER_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/wda_manager.sh appium-2.0.0 scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "[INFO] Valid build for appium-2.0.0."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/wda_manager.sh appium-2.0.0 sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        },
+        {
+            "name": "WDA_HANDLER_APPIUM_2.1.3",
+            "type": "CUSTOM",
+            "is_zdt": true,
+            "depends_on": [
+                "WDA_HANDLER_SCRIPT_DOWNLOAD",
+                "APPIUM_DOWNLOADER",
+                "XCUITEST_INSTALLATION_2.0.0",
+                "NODE_PACKAGE_MANAGER",
+                "NODE_SELECTOR",
+                ".APPIUM_DRIVER_INSTALLATION"
+            ],
+            "is_sync_enabled": true,
+            "sync_interval": "24h",
+            "custom": {
+                "scan": {
+                    "command": "bash",
+                    "args": [
+                        "-c",
+                        "bash /Users/ltuser/Documents/wda_manager.sh appium-2.1.3 scan"
+                    ],
+                    "run_as_root": false,
+                    "expected_output": "[INFO] Valid build for appium-2.1.3."
+                },
+                "sync": {
+                    "command": {
+                        "command": "bash",
+                        "args": [
+                            "-c",
+                            "bash /Users/ltuser/Documents/wda_manager.sh appium-2.1.3 sync"
+                        ],
+                        "run_as_root": false
+                    }
+                }
+            }
+        }
+    ]
+}

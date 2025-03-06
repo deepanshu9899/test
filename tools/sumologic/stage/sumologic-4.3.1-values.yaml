@@ -1,0 +1,424 @@
+fullnameOverride: sumologic
+kube-prometheus-stack:
+  enabled: true
+  prometheus:
+    prometheusSpec:
+      scrapeInterval: "1m"
+metadata:
+  logs:
+    enabled: true
+    logLevel: info
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 768Mi
+    statefulset:
+      replicaCount: 1
+      tolerations:
+        - effect: NoSchedule
+          key: linux-extra-taint
+          operator: Equal
+          value: extra
+        - effect: NoSchedule
+          key: linux-worker-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: normal
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: quickrun
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+        - effect: NoSchedule
+          key: workload
+          operator: Equal
+          value: utility
+        - effect: NoSchedule
+          key: linux-pool
+          operator: Equal
+          value: auteur
+  metrics:
+    enabled: true
+    logLevel: info
+    podDisruptionBudget:
+      minAvailable: 1
+    statefulset:
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 150m
+          memory: 768Mi
+      tolerations:
+        - effect: NoSchedule
+          key: linux-extra-taint
+          operator: Equal
+          value: extra
+        - effect: NoSchedule
+          key: linux-worker-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: normal
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: quickrun
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+        - effect: NoSchedule
+          key: workload
+          operator: Equal
+          value: utility
+        - effect: NoSchedule
+          key: linux-pool
+          operator: Equal
+          value: auteur
+metrics-server:
+  enabled: false
+nameOverride: sumologic
+namespaceOverride: ""
+opentelemetry-operator:
+  enabled: true
+otelcolInstrumentation:
+  sourceMetadata:
+    excludeNamespaceRegex: "^(kube-public|kube-node-lease|tigera-operator|kube-system|gatekeeper-system|argocd|default|linux-container-workers|linux-perf-container-workers|linux-quickrun-workers|linux-container-workers-dev|sumologic|linux-container-worker-beta)"
+  autoscaling:
+    maxReplicas: 3
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+  enabled: true
+  statefulset:
+    replicaCount: 1
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+      - effect: NoSchedule
+        key: linux-pool
+        operator: Equal
+        value: auteur
+otelevents:
+  image:
+    pullPolicy: IfNotPresent
+  logLevel: info
+  statefulset:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 200m
+        memory: 500Mi
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+      - effect: NoSchedule
+        key: linux-pool
+        operator: Equal
+        value: auteur
+otellogs:
+  daemonset:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 32Mi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: linux-worker-pool # Label for Worker node pool
+                  operator: In
+                  values:
+                    - "true"
+            - matchExpressions:
+                - key: hyenodepool # Label for Application node pool
+                  operator: In
+                  values:
+                    - application
+            - matchExpressions:
+                - key: hyenodepool # Label for Auteur node pool
+                  operator: In
+                  values:
+                    - auteur
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+      - effect: NoSchedule
+        key: linux-pool
+        operator: Equal
+        value: auteur
+  logLevel: info
+  metrics:
+    enabled: true
+sumologic:
+  accessId: <user-id>
+  accessKey: <access-key>
+  clusterName: hyex-aks-stage
+  events:
+    enabled: true
+  logs:
+    collector:
+      otelcol:
+        enabled: true
+    container:
+      excludeNamespaceRegex: "^(kube-public|kube-node-lease|tigera-operator|kube-system|gatekeeper-system|argocd|default|linux-container-workers|linux-perf-container-workers|linux-quickrun-workers|linux-container-workers-dev|sumologic|linux-container-worker-beta)"
+    enabled: true
+  metrics:
+    remoteWriteProxy:
+      replicaCount: 2
+    collector:
+      otelcol:
+        enabled: true
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1.2Gi
+          requests:
+            cpu: 100m
+            memory: 768Mi
+        scrapeInterval: 30s
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: linux-worker-pool # Label for Worker node pool
+                      operator: In
+                      values:
+                        - "true"
+                - matchExpressions:
+                    - key: hyenodepool # Label for Application node pool
+                      operator: In
+                      values:
+                        - application
+                - matchExpressions:
+                    - key: hyenodepool # Label for Auteur node pool
+                      operator: In
+                      values:
+                        - auteur
+        tolerations:
+          - effect: NoSchedule
+            key: linux-extra-taint
+            operator: Equal
+            value: extra
+          - effect: NoSchedule
+            key: linux-worker-pool
+            operator: Equal
+            value: "true"
+          - effect: NoSchedule
+            key: hyperexecute/linux-worker-type
+            operator: Equal
+            value: normal
+          - effect: NoSchedule
+            key: hyperexecute/linux-worker-type
+            operator: Equal
+            value: quickrun
+          - effect: NoSchedule
+            key: application-pool
+            operator: Equal
+            value: "true"
+          - effect: NoSchedule
+            key: kubernetes.azure.com/scalesetpriority
+            operator: Equal
+            value: spot
+          - effect: NoSchedule
+            key: workload
+            operator: Equal
+            value: utility
+          - effect: NoSchedule
+            key: linux-pool
+            operator: Equal
+            value: auteur
+    enabled: true
+  setup:
+    job:
+      tolerations:
+        - effect: NoSchedule
+          key: linux-extra-taint
+          operator: Equal
+          value: extra
+        - effect: NoSchedule
+          key: linux-worker-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: normal
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: quickrun
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+        - effect: NoSchedule
+          key: workload
+          operator: Equal
+          value: utility
+        - effect: NoSchedule
+          key: linux-pool
+          operator: Equal
+          value: auteur
+  traces:
+    enabled: true
+    sourceType: otlp
+tracesGateway:
+  deployment:
+    nodeSelector:
+      hyexnodepool: utility
+      pool: userpool
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 196Mi
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+      - effect: NoSchedule
+        key: linux-pool
+        operator: Equal
+        value: auteur
+  enabled: true

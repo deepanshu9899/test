@@ -1,0 +1,11 @@
+name: Lint Checks
+on:
+  pull_request:
+    branches:
+      - stage
+jobs:
+  Secret-Scan:
+    uses: LambdatestIncPrivate/Security-GithubAction/.github/workflows/secret-scan.yml@main
+    secrets:
+      SECURITY_TEAM_MEMBERS: ${{ secrets.SECURITY_TEAM_MEMBERS }}
+      ACTION_MONITORING_SLACK: ${{ secrets.ACTION_MONITORING_SLACK }}

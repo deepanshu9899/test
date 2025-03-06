@@ -1,0 +1,14 @@
+---
+# tasks file for basic_scripts
+- name: Download private files
+  ansible.builtin.import_tasks: download.yml
+  delegate_to: 127.0.0.1
+
+- name: Copy scripts
+  ansible.builtin.import_tasks: copy_scripts.yml
+
+- name: Fill templates
+  ansible.builtin.import_tasks: fill_templates.yml
+
+- name: Make files executable
+  ansible.builtin.import_tasks: permissions.yml

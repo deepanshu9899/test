@@ -1,0 +1,255 @@
+kube-prometheus-stack:
+  enabled: true
+  defaultRules:
+    rules:
+      prometheus: true
+      prometheusOperator: true
+  prometheus:
+    prometheusSpec:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+metadata:
+  metrics:
+    enabled: true
+    statefulset:
+      tolerations:
+        - effect: NoSchedule
+          key: linux-extra-taint
+          operator: Equal
+          value: extra
+        - effect: NoSchedule
+          key: linux-worker-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: normal
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: quickrun
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+        - effect: NoSchedule
+          key: workload
+          operator: Equal
+          value: utility
+metrics-server:
+  enabled: false
+nameOverride: sumologic
+namespaceOverride: ""
+opentelemetry-operator:
+  enabled: true
+otelcolInstrumentation:
+  enabled: true
+  statefulset:
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+      requests:
+        memory: 768Mi
+        cpu: 500m
+otelevents:
+  statefulset:
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: 1000m
+      requests:
+        memory: 500Mi
+        cpu: 200m
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+otellogs:
+  daemonset:
+    resources:
+      limits:
+        memory: 256Mi
+        cpu: 500m
+      requests:
+        memory: 32Mi
+        cpu: 100m
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+  metrics:
+    enabled: true
+sumologic:
+  accessId: < Access ID>
+  accessKey: < Access Key>
+  clusterName: he-stage-aks-benchmark
+  endpoint: ""
+  events:
+    enabled: true
+  logs:
+    container:
+      excludeNamespaceRegex: linux-container-workers,linux-perf-container-workers,linux-quickrun-workers,linux-container-workers-dev,sumologic
+    enabled: true
+  metrics:
+    remoteWriteProxy:
+      enabled: true
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    collector:
+      otelcol:
+        enabled: true
+      tolerations:
+        - effect: NoSchedule
+          key: linux-extra-taint
+          operator: Equal
+          value: extra
+        - effect: NoSchedule
+          key: linux-worker-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: normal
+        - effect: NoSchedule
+          key: hyperexecute/linux-worker-type
+          operator: Equal
+          value: quickrun
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+        - effect: NoSchedule
+          key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+        - effect: NoSchedule
+          key: workload
+          operator: Equal
+          value: utility
+    enabled: true
+  setup:
+    job:
+      resources:
+        limits:
+          memory: 256Mi
+          cpu: 500m
+        requests:
+          memory: 64Mi
+          cpu: 200m
+    tolerations:
+      - effect: NoSchedule
+        key: linux-extra-taint
+        operator: Equal
+        value: extra
+      - effect: NoSchedule
+        key: linux-worker-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: normal
+      - effect: NoSchedule
+        key: hyperexecute/linux-worker-type
+        operator: Equal
+        value: quickrun
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: kubernetes.azure.com/scalesetpriority
+        operator: Equal
+        value: spot
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: utility
+  traces:
+    enabled: true
+telegraf-operator:
+  enabled: false
+tracesGateway:
+  deployment:
+    nodeSelector: {}
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 196Mi
+    tolerations:
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+  enabled: true

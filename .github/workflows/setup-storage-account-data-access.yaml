@@ -1,0 +1,159 @@
+name: Setup Storage Account data Access
+
+on:
+  workflow_dispatch:
+    inputs:
+      machine_ip:
+        type: choice
+        description: Provide machine IP for which SAS is authenticated
+        required: true
+        default: "172.174.124.222"
+        options:
+          - 172.174.124.222 (for cs team)
+          - any (for dev team Only)
+
+      storage_container:
+        type: choice
+        description: Select the Storage container to access
+        required: true
+        default: "uploads"
+        options:
+          - uploads
+          - reports
+          - cache
+          - task-logs
+          - artefacts
+          - misc
+          - jobs
+
+      blob_path:
+        description: Provide Path to access data in container
+        type: string
+        required: true
+
+      jira:
+        type: string
+        description: Jira Ticket ID
+        required: true
+
+permissions: {}
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo " ALL THE INPUTS PROVIDED IN WORKFLOW TRIGGER "
+          echo machine_ip       : "${{ github.event.inputs.machine_ip }}"
+          echo storage_container: "${{ github.event.inputs.storage_container }}"
+          echo blob_path        : "${{ github.event.inputs.blob_path }}"
+          echo jira             : "${{ github.event.inputs.jira }}"
+
+  storage-data-access:
+    name: "Actor:${{ github.actor }}  ${{github.event.inputs.jira}}  ${{github.event.inputs.machine_ip}}"
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    env:
+      STORAGE_ACCOUNT_NAME: ${{ vars.STORAGE_ACCOUNT_NAME }}
+      RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+      CS_SUPPORT_DEBUGGING_VM: ${{ vars.CS_SUPPORT_DEBUGGING_VM }}
+    permissions:
+      contents: read
+      issues: write
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Format the image creation source for SAS blob
+        id: formatting-blob
+        run: |
+          sas_blob_path="${{github.event.inputs.blob_path}}"
+          container_name="${{github.event.inputs.storage_container}}"
+          echo ${sas_blob_path} ${container_name}
+          blob_path=""
+          case $container_name in
+            "uploads")
+              blob_path=${{github.event.inputs.blob_path}}.zip
+              ;;
+            *)
+              blob_path=${{github.event.inputs.blob_path}}
+              ;;
+          esac
+          echo $blob_path
+          echo "blob_path=$blob_path" >> $GITHUB_OUTPUT
+
+      - name: Get SAS URL
+        id: generate-sas-url
+        run: |
+          date
+          CONTAINER_NAME="${{github.event.inputs.storage_container}}"
+          blob_path="${{steps.formatting-blob.outputs.blob_path}}"
+          ALLOWED_IP=""
+          if [ "${{ github.event.inputs.machine_ip }}" == "any (for dev team Only)" ]; then
+            ALLOWED_IP=""
+          else
+            ALLOWED_IP="${{ github.event.inputs.machine_ip }}"
+          fi
+
+          echo ALLOWS IP $ALLOWED_IP
+          EXPIRY=`date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ'`
+
+          echo $CONTAINER_NAME $blob_path $ALLOWED_IP $EXPIRY
+
+          sas_command="az storage container generate-sas --account-name '${STORAGE_ACCOUNT_NAME}' \
+          --account-key ${{secrets.STORAGE_ACCOUNT_KEY}} \
+          --name '$CONTAINER_NAME' --permissions rl \
+          --expiry '${EXPIRY}' \
+          --output tsv"
+
+          if [ -n "${ALLOWED_IP}" ]; then
+            sas_command="$sas_command --ip '${ALLOWED_IP%% *}'"
+          fi
+
+          echo sas_command $sas_command
+          SAS_TOKEN=$(eval "$sas_command")
+          echo "SAS TOKEN: $SAS_TOKEN"
+          SAS_URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${CONTAINER_NAME}/${blob_path}?${SAS_TOKEN}"
+          echo "SAS_URL=$SAS_URL"
+          echo "SAS_URL=$SAS_URL" >> $GITHUB_OUTPUT
+
+      - name: Check and Install AzCopy
+        run: |
+          if ! command -v azcopy &> /dev/null; then
+            echo "AzCopy not installed. Installing..."
+            wget https://aka.ms/downloadazcopy-v10-linux -O azcopy.tar.gz
+            mkdir -p azcopy
+            tar -xvf azcopy.tar.gz -C azcopy --strip-components=1
+            sudo mv azcopy/azcopy /usr/local/bin/
+          else
+            echo "AzCopy is already installed."
+          fi
+
+          # Verify AzCopy installation
+          azcopy --version
+
+      - name: Download the Cache(org ID) and Reports
+        if: ${{ github.event.inputs.machine_ip == '172.174.124.222 (for cs team)' }}
+        run: |
+          vmName="prod-support-debugging-vm"
+          echo folder_name $folder_name
+          echo "AZ COPY Version"
+          azcopy --version
+
+          ## Copy the provided data path in VM.
+          az vm run-command invoke \
+          --command-id RunPowerShellScript --name $CS_SUPPORT_DEBUGGING_VM \
+          -g  $RESOURCE_GROUP \
+          --scripts "azcopy copy '${{ steps.generate-sas-url.outputs.SAS_URL }}' 'C:\Users\ltuser\cs-support\${{ github.actor }}' --recursive=true"

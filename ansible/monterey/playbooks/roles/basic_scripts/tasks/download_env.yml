@@ -1,0 +1,31 @@
+---
+- name: Move to correct dir
+  shell: |
+    rm -rf {{ backup_scripts_path }}/env
+    rm -rf {{ backup_scripts_path }}/foreman
+    mkdir -p {{ backup_scripts_path }}/env/
+    mkdir -p {{ backup_scripts_path }}/foreman/
+
+- name: Download hps env
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/env/env/.env
+    dest: "{{ backup_scripts_path }}/env/.env"
+
+- name: Download foreman env
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/env/foreman/.env
+    dest: "{{ backup_scripts_path }}/foreman/.env"
+
+- name: Download foreman hf
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/env/foreman/.hf
+    dest: "{{ backup_scripts_path }}/foreman/.hf"

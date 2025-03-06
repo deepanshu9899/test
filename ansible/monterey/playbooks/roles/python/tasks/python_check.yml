@@ -1,0 +1,58 @@
+---
+- name: Python version check
+  command: python3 --version
+  register: p_vers
+
+- name: Assigning variable based on Python presence/absence 
+  set_fact:
+    py1: "{{ 0 if p_vers is failed else 1 }}"
+
+- name: Assigning variable based on version match/mismatch
+  set_fact:
+    py2: "{{ 1 if p_vers.stdout_lines[0] | regex_search('{{python_vers_regex}}') else -1 }}"
+  when: "{{ py1 }}==1"
+
+- name: Downloading .pkg file for Python
+  shell: |
+    curl -O {{python_link}}
+  args:
+    executable: /bin/bash
+  when: "{{ py1 }} == 0 or {{ py2 }} == -1"
+
+- name: Installing python
+  shell: |
+    installer -pkg {{python_pkg_name}} -target /
+  args:
+    executable: /bin/bash
+  when: "{{ py1 }} == 0 or {{ py2 }} == -1"
+
+- name: Ensuring correct Installation of Pip and OpenSSL certificates
+  shell: |
+    MAJOR_VERSION=$(echo {{python_full_version}} | cut -d '.' -f 1)
+    MINOR_VERSION=$(echo {{python_full_version}} | cut -d '.' -f 2)
+
+    PYTHON_MAJOR=python$MAJOR_VERSION
+    PYTHON_MAJOR_DOT_MINOR=python$MAJOR_VERSION.$MINOR_VERSION
+    PYTHON_MAJOR_MINOR=python$MAJOR_VERSION$MINOR_VERSION
+    PYTHON_APPLICATION_PATH="/Applications/Python ${MAJOR_VERSION}.${MINOR_VERSION}"
+
+    cd usr/local/bin
+
+    chmod +x python $PYTHON_MAJOR $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJOR_MINOR python
+
+    python -m ensurepip
+    python -m pip install --ignore-installed pip --disable-pip-version-check --no-warn-script-location --root-user-action=ignore
+
+    sh -e "${PYTHON_APPLICATION_PATH}/Install Certificates.command"
+
+  args:
+    executable: /bin/bash
+  when: "{{ py1 }} == 0 or {{ py2 }} == -1"
+  ignore_errors: yes
+
+- name: Deleting .pkg file for Python
+  shell: |
+    rm {{python_pkg_name}}
+  args:
+    executable: /bin/bash
+  when: "{{ py1 }} == 0 or {{ py2 }} == -1"

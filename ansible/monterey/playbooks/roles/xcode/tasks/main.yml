@@ -1,0 +1,19 @@
+---
+# This task uses azure_rm_storageblob which is not running for the remote host from my local host
+# Haven't tried this ansible from linux
+# For now downloading on local
+# Again: mac -> mac --- not working
+#     delegate_to: 127.0.0.1 ---- working, but this will dowload it to local and not remote
+# - name: Download xip
+#   include: download.yml
+#   delegate_to: 127.0.0.1
+
+## Make sure files/xcode_14.0.xip exists or run above task
+## TODO: if the file does not exist on the machine, this is very slow. Generate sas and download directly in the machine, This is very slow
+## TODO: Create SAS URL and download the file directly in the remote machine, if its absent
+# - name: Copy xcode xip
+#   ansible.builtin.import_tasks: copy.yml
+
+## If above tasks hang, manually download this file in remote hosts. As its a large file and I encounter hangs too often for this
+- name: Install xcode
+  ansible.builtin.import_tasks: install.yml

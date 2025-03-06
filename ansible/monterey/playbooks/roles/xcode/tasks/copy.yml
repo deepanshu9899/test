@@ -1,0 +1,9 @@
+---
+- name: Copy xcode xip if it does not exist
+  ansible.posix.synchronize:
+    src: "{{ xcode_xip_location_local }}"
+    dest: "{{ xcode_xip_directory }}"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l ltuser'

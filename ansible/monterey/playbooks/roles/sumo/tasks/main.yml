@@ -1,0 +1,21 @@
+---
+# tasks file for sumo
+- name: Copy sumo binaries
+  ansible.builtin.import_tasks: copy.yml
+
+- name: Generate user.propertes file
+  become: true
+  ansible.builtin.template:
+    src: "roles/{{ role_path | basename }}/templates/user.properties"
+    dest: "/Users/{{ ansible_user }}/Downloads/Sumo Logic Collector/config/user.properties"
+    mode: '400'
+
+- name: Copy collector.json
+  become: true
+  ansible.posix.synchronize:
+    src: "roles/{{ role_path | basename }}/files/collector.json"
+    dest: "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/bash-scripts/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'

@@ -1,0 +1,7 @@
+files/hyperexecute_mac_content/env/.env
+files/hyperexecute_mac_content/foreman/*
+files/hyperexecute_mac_content/certificates/*
+files/hyperexecute_mac_content/lambda/shared-tools/volume/certs/*
+files/hyperexecute_mac_content/scripts/download_binaries.sh
+files/hyperexecute_mac_content/scripts/foreman.sh
+files/hyperexecute_mac_content/python/*

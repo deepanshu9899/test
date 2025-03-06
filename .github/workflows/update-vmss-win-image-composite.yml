@@ -1,0 +1,278 @@
+name: Update VMSS Windows Image Composite
+
+on:
+  workflow_call:
+    inputs:
+      os_version:
+        type: string
+        required: true
+        description: OS-version
+      resource_group:
+        type: string
+        description: Select the resources Group Name
+        required: true
+        default: "hypertest-stage"
+      gallery_name:
+        type: string
+        description: Image gallery
+        required: true
+        default: "hypertest_stage"
+      image_definition:
+        type: string
+        description: Image definition
+        required: true
+      image_version:
+        type: string
+        description: Image version
+        required: true
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo " ALL THE INPUTS PROVIDED IN WORKFLOW TRIGGER "
+          echo os_version       : "${{ inputs.os_version }}"
+          echo resource_group   : "${{ inputs.resource_group }}"
+          echo gallery_name     : "${{ inputs.gallery_name }}"
+          echo image_definition : "${{ inputs.image_definition }}"
+          echo image_version    : "${{ inputs.image_version }}"
+
+  update-image:
+    environment: ${{ 
+       inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || 
+       github.ref_name }}
+    runs-on: ubuntu-latest
+    outputs:
+      ENV_OS: ${{ steps.set-env-os.outputs.ENV_OS }}
+      SUBSCRIPTION_ID: ${{ steps.set-subscription-id.outputs.subscription_id }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Setup Environment Variable
+        shell: bash
+        id: set-env-os
+        run: |
+          ENV_OS="${{ github.ref_name }}_${{ inputs.os_version }}"
+          echo "ENV_OS=${{ github.ref_name }}_${{ inputs.os_version }}" >> $GITHUB_ENV
+          echo "ENV_OS=${{ github.ref_name }}_${{ inputs.os_version }}" >> $GITHUB_OUTPUT
+
+      - name: Azure login for hyperexecute-prod-extended
+        if: inputs.resource_group_name == 'hyperexecute-prod-extended'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+      - name: Azure login for other resource groups
+        if: inputs.resource_group_name != 'hype_msft_prod' 
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+
+
+      - name: Azure login for other resource groups
+        if: inputs.resource_group_name != 'hyperexecute-prod-extended' && inputs.resource_group_name != 'hype_msft_prod' 
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Subscription ID
+        id: set-subscription-id
+        run: |
+          if [ "${{ inputs.resource_group_name }}" == "hyperexecute-prod-extended" ]; then
+            echo "Using AZURE_SUBSCRIPTION_ID_MSFT"
+            echo "SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}" >> $GITHUB_ENV
+            echo "subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}" >> $GITHUB_OUTPUT
+          elif [ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]; then
+            echo "Using AZURE_SUBSCRIPTION_ID_MSFT"
+            echo "SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}" >> $GITHUB_ENV
+            echo "subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}" >> $GITHUB_OUTPUT
+          else
+            echo "Using AZURE_SUBSCRIPTION_ID"
+            echo "SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_OUTPUT
+          fi
+  
+      - name: Fail safe
+        run: |
+          cat servers.ini
+          cat $GITHUB_ENV
+          echo $ENV_OS
+
+      - name: Check Gallery Image Replication Regions
+        id: check-image-replication
+        env:
+          vmssType: ${{ env.ENV_OS }}
+          resourceGroup: ${{ inputs.resource_group }}
+          subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+          imageGallery: ${{ inputs.gallery_name }}
+          imageDefinition: ${{ inputs.image_definition }}
+          imageVersion: ${{ inputs.image_version }}
+        run: |
+          # Determine region based on the branch or resource group
+          if [ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]; then
+            REGION="eastus2"
+          elif [ "${{ inputs.resource_group_name }}" == "hyperexecute-prod-extended" ]; then
+            REGION="eastus eastus2"
+          else
+           case "${{ github.ref_name }}" in
+            "stage")
+              REGION="eastus centralindia"
+          ;;
+            "prod")
+              REGION="eastus centralindia westeurope"
+          ;;
+           *)
+              REGION="eastus"
+          ;;
+           esac
+          fi
+          echo "Using region: $REGION"
+          echo "Selected regions for this branch/resource group: $REGION"
+          echo "VMSS Type: $vmssType"
+          echo "Resource Group: $resourceGroup"
+          echo "Subscription ID: $subscriptionId"
+          echo "Image Gallery: $imageGallery"
+          echo "Image Definition: $imageDefinition"
+          echo "Image Version: $imageVersion"
+
+          # Fetch image replication regions from Azure
+          replication_regions=$(az sig image-version show \
+            --resource-group "$resourceGroup" \
+            --gallery-name "$imageGallery" \
+            --gallery-image-definition "$imageDefinition" \
+            --gallery-image-version "$imageVersion" \
+            --query "publishingProfile.targetRegions[].name" -o tsv)
+          processed_regions=""
+          while IFS= read -r region; do
+              # Convert to lowercase and remove spaces
+              processed_region=$(echo "$region" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+              
+              # Concatenate to the processed_regions variable
+              processed_regions+="$processed_region "
+          done <<< "$replication_regions"
+          # Trim the trailing space
+          processed_regions=$(echo "$processed_regions" | sed 's/[[:space:]]*$//')
+
+          echo "Replication Regions from Azure: $processed_regions"
+
+          # Loop through each region in the selected regions
+          for region in $REGION; do
+            lower_region=$(echo "$region" | tr '[:upper:]' '[:lower:]')
+            
+            # Check if the selected region exists in the image replication regions
+            if echo "$processed_regions" | grep -q "$lower_region"; then
+              echo "Region $region is present in the image replication regions."
+            else
+              echo "Error: Region $region is NOT present in the image replication regions."
+              exit 1
+            fi
+          done
+          echo "All selected regions are replicated in the image. Proceeding..."
+
+      - name: Run VMSS update script
+        if: steps.check-image-replication.outcome == 'success'
+        id: update-vmss
+        env:
+          vmssType: ${{ env.ENV_OS }}
+          resourceGroup: ${{ inputs.resource_group }}
+          subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+          imageGallery: ${{ inputs.gallery_name }}
+          imageDefinition: ${{ inputs.image_definition }}
+          imageVersion: ${{ inputs.image_version }}
+        run: |
+          echo $vmssType $resourceGroup $subscriptionId $imageGallery $imageDefinition $imageVersion
+          inventory='servers.ini'
+
+          # If resource group is hyperexecute-prod-extended, use specific labels
+          if [ "$resourceGroup" == "hyperexecute-prod-extended" ]; then
+               vmss_labels=("prod_msft-win10" "prod_msft-win11")
+          elif [ "$resourceGroup" == "hype_msft_prod" ]; then
+               vmss_labels=("prod_msft-win10_new" "prod_msft-win11_new")
+          else
+               vmss_labels=($vmssType)
+           fi
+
+          for label in "${vmss_labels[@]}"; do
+            values=$(awk -F '=' '/\['$label'\]/{flag=1;next} /\[/{flag=0} flag {print $1}' $inventory)
+            echo "Updating VMSS under label [$label]: $values"
+
+            update_vmss() {
+              local value=$1
+              echo "Updating $value ..."
+              if az vmss update --name "$value" --resource-group "$resourceGroup" --set virtualMachineProfile.storageProfile.imageReference.id="/subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.Compute/galleries/$imageGallery/images/$imageDefinition/versions/$imageVersion" >> "$value.log"; then
+                echo "Successfully Updated $value!"
+              else
+                echo "Failed to update $value!" >> "$value.log"
+              fi
+            }
+            export -f update_vmss
+
+            # Run the updates in parallel in batches of 5
+            echo "${values[@]}" | xargs -n 1 -P 5 -I {} bash -c 'update_vmss "$@"' _ {}
+          done
+        
+    
+        
+  verify-image:
+    environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || github.ref_name }}
+    runs-on: ubuntu-latest
+    needs: [update-image]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        
+      # Step 3: Azure Login Based on Resource Group
+      - name: Azure login for hyperexecute-prod-extended
+        if: inputs.resource_group == 'hyperexecute-prod-extended'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+      - name: Azure login for hyperexecute-prod-extended
+        if: inputs.resource_group_name == 'hype_msft_prod'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+      - name: Azure login for other resource groups
+        if: inputs.resource_group != 'hyperexecute-prod-extended' && inputs.resource_group!='hype_msft_prod'
+        uses: azure/login@v1
+        with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+         
+      
+      - name: Verify Images Updation
+        env:
+          vmssType: ${{ needs.update-image.outputs.ENV_OS }}
+          resourceGroup: ${{ inputs.resource_group }}
+          subscriptionId: ${{ needs.update-image.outputs.SUBSCRIPTION_ID }}
+        run: |
+          echo $resourceGroup $subscriptionId
+          inventory='servers.ini'
+
+          # If resource group is hyperexecute-prod-extended, use specific labels
+          if [ "$resourceGroup" == "hyperexecute-prod-extended" ]; then
+               vmss_labels=("prod_msft-win10" "prod_msft-win11")
+          elif [ "$resourceGroup" == "hype_msft_prod" ]; then
+               vmss_labels=("prod_msft-win10_new" "prod_msft-win11_new")
+          else
+               vmss_labels=($vmssType)
+           fi
+
+          for label in "${vmss_labels[@]}"; do
+            values=$(awk -F '=' '/\['$label'\]/{flag=1;next} /\[/{flag=0} flag {print $1}' $inventory)
+            echo "Verifying VMSS under label [$label]: $values"
+
+            for value in $values; do
+              image_id=$(az vmss show --resource-group $resourceGroup --subscription $subscriptionId --name $value --query virtualMachineProfile.storageProfile.imageReference.id --output tsv)
+              if [ $? -eq 0 ]; then
+                  echo "Image id for $value is $image_id"
+              else
+                  echo "Failed to fetch image id for $value"
+              fi
+            done
+          done

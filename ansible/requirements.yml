@@ -1,0 +1,11 @@
+---
+roles:
+  - src: https://github.com/macstadium/ansible-role-xcode
+    version: 68ce8fe306ea6d060063ab881cc1a3fdb72c9882
+    name: xcode_install_role
+
+collections:
+  - name: azure.azcollection
+    version: 1.16.0
+  - name: ansible.posix
+    version: 1.5.4

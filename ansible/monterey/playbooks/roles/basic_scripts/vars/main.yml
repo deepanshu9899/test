@@ -1,0 +1,3 @@
+---
+# vars file for basic_scripts
+backup_scripts_path: roles/basic_scripts/files/hyperexecute_mac_content

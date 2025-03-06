@@ -1,0 +1,96 @@
+# .github/workflows/send_unused_vms_to_slack.yml
+name: Notify Unused VMs in Azure to Slack
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+  workflow_dispatch:
+  schedule:
+  - cron: "0 0 * * *"
+
+jobs:
+  notify-unused-vms-workflow-dispatch:
+    if: ${{ !inputs.branch || inputs.branch == '' }}
+    runs-on: ubuntu
+    environment: ${{ github.ref_name }}-withoutapproval
+    env:
+      SUBSCRIPTION_IDS: ${{ vars.AZURE_SUBSCRIPTION_IDS }}  # Comma-separated list of subscription IDs
+      EXCLUSION_DICT: ${{ vars.EXCLUSION_DICT }}      # JSON object of exclusion criteria
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Create virtual environment and install dependencies
+        run: |
+          echo $GITHUB_REF
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install slack_sdk azure-identity azure-mgmt-compute azure-mgmt-resource mysql-connector-python pyyaml
+
+      - name: Run the notification script
+        run: |
+        
+          source venv/bin/activate
+          python tools/azure/vmss_stale_vms.py
+
+      - name: Delete virtual environment
+        run: rm -rf venv
+
+  notify-unused-vms-workflow-call:
+    if: ${{ inputs.branch && inputs.branch != '' }}
+    runs-on: ubuntu
+    environment: ${{ inputs.branch }}-withoutapproval
+    env:
+      SUBSCRIPTION_IDS: ${{ vars.AZURE_SUBSCRIPTION_IDS }}  # Comma-separated list of subscription IDs
+      EXCLUSION_DICT: ${{ vars.EXCLUSION_DICT }}      # JSON object of exclusion criteria
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Create virtual environment and install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install slack_sdk azure-identity azure-mgmt-compute azure-mgmt-resource mysql-connector-python pyyaml
+
+      - name: Run the notification script
+        run: |
+        
+          source venv/bin/activate
+          python tools/azure/vmss_stale_vms.py --branch ${{ inputs.branch }}
+
+      - name: Delete virtual environment
+        run: rm -rf venv

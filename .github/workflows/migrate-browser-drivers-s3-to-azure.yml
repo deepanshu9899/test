@@ -1,0 +1,30 @@
+name: Copy Browsers, Drivers and Selenium Jars from S3 to Azure Blob Storage
+
+on:
+  workflow_dispatch:
+
+jobs:
+  copy-s3-to-azure:
+    runs-on: ubuntu
+    environment: browser-approval-prod
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install AzCopy
+        run: |
+          wget https://aka.ms/downloadazcopy-v10-linux
+          tar -xvf downloadazcopy-v10-linux
+          sudo cp ./azcopy_linux_amd64_*/azcopy /usr/bin/
+          azcopy --version
+
+      - name: browsers,drivers and selenium jars from S3 to Azure Storage
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.PROD_HYP_BROWSER_AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_SAS_TOKEN: ${{ secrets.PROD_HYP_BROWSER_AZURE_STORAGE_SAS_TOKEN }}
+        run: |
+          set +e
+          azcopy copy "https://s3.us-east-1.amazonaws.com/prod-magicleap-browsers-drivers-v1/mac/*" "https://${{ secrets.PROD_HYP_BROWSER_AZURE_STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/mac?${{ secrets.PROD_HYP_BROWSER_AZURE_STORAGE_SAS_TOKEN }}" --recursive=true

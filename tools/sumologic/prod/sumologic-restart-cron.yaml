@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"CronJob","metadata":{"annotations":{},"name":"sumologic-restart-cron","namespace":"sumologic"},"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"command":["/bin/bash","-c","kubectl -n sumologic rollout restart daemonset sumologic-fluent-bit"],"image":"bitnami/kubectl","imagePullPolicy":"IfNotPresent","name":"sumologic-restart-cron"}],"restartPolicy":"OnFailure","serviceAccount":"sumologic-restart-cron-sa","serviceAccountName":"sumologic-restart-cron-sa"}}}},"schedule":"* */4 * * *"}}
+  creationTimestamp: "2023-09-13T15:19:03Z"
+  generation: 1
+  name: sumologic-restart-cron
+  namespace: sumologic
+  resourceVersion: "225660232"
+  uid: a132c7cf-0584-429a-a500-c5d98d455ee6
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - -c
+            - kubectl -n sumologic rollout restart daemonset sumologic-fluent-bit
+            image: bitnami/kubectl
+            imagePullPolicy: IfNotPresent
+            name: sumologic-restart-cron
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: sumologic-restart-cron-sa
+          serviceAccountName: sumologic-restart-cron-sa
+          terminationGracePeriodSeconds: 30
+  schedule: '* */4 * * *'
+  successfulJobsHistoryLimit: 3
+  suspend: false
+status:
+  lastScheduleTime: "2023-12-17T04:18:00Z"
+  lastSuccessfulTime: "2023-12-17T04:18:05Z"

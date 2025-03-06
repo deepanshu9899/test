@@ -1,0 +1,6 @@
+---
+- name: Test sumo
+  hosts: localhost
+  remote_user: root
+  roles:
+    - sumo # noqa: syntax-check[specific]

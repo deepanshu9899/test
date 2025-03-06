@@ -1,0 +1,125 @@
+fullnameOverride: sumologic
+kube-prometheus-stack:
+  enabled: true
+metadata:
+  logs:
+    enabled: true
+    logLevel: info
+    statefulset:
+      nodeSelector: {}
+      tolerations:
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+  metrics:
+    enabled: true
+    logLevel: info
+    podDisruptionBudget:
+      minAvailable: 2
+    statefulset:
+      nodeSelector: {}
+      tolerations:
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+metrics-server:
+  enabled: false
+nameOverride: sumologic
+namespaceOverride: ""
+opentelemetry-operator:
+  enabled: true
+otelcolInstrumentation:
+  enabled: true
+  autoscaling:
+    maxReplicas: 10
+    minReplicas: 3
+    targetCPUUtilizationPercentage: 100
+    targetMemoryUtilizationPercentage: 70
+  statefulset:
+    tolerations:
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+otelevents:
+  image:
+    pullPolicy: IfNotPresent
+  logLevel: info
+  statefulset:
+    nodeSelector: {}
+    tolerations:
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+otellogs:
+  daemonset:
+    tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+  logLevel: info
+  metrics:
+    enabled: true
+sumologic:
+  accessId: <Access ID>
+  accessKey: <Access Key>
+  clusterName: he-prod-aks
+  events:
+    enabled: true
+  logs:
+    collector:
+      otelcol:
+        enabled: true
+    enabled: true
+  metrics:
+    collector:
+      otelcol:
+        enabled: true
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 768Mi
+        scrapeInterval: 30s
+        tolerations:
+          - effect: NoSchedule
+            key: application-pool
+            operator: Equal
+            value: "true"
+    enabled: true
+  setup:
+    job:
+      tolerations:
+        - effect: NoSchedule
+          key: application-pool
+          operator: Equal
+          value: "true"
+  traces:
+    enabled: true
+    sourceType: otlp
+tracesGateway:
+  deployment:
+    nodeSelector: {}
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 196Mi
+    tolerations:
+      - effect: NoSchedule
+        key: application-pool
+        operator: Equal
+        value: "true"
+  enabled: true

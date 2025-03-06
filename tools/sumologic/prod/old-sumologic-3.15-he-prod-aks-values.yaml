@@ -1,0 +1,57 @@
+fluent-bit:
+  image:
+    tag: 1.7.3
+  input:
+    systemd:
+      enabled: false
+fluentd:
+  logs:
+    containers:
+      excludePodRegex: kube-proxy-.*|coredns-.*-.*|metrics-server-.*-.*|tunnelfront-.*-.*|calico-node-.*|calico-kube-controllers-.*|calico-typha-.*-.*|cert-manager-.*-.*|cert-manager-.*-.*-.*|pi-tas-cluster-entity-operator-.*-.*|.*-tas-cluster-.*-.*|strimzi-cluster-operator-.*-.*|cloud-node-manager-.*
+      multiline:
+        enabled: false
+      overrideRawConfig:
+        "<filter containers.**>\n  @type record_transformer\n  enable_ruby\n
+        \ renew_record true\n  <record>\n    log    ${record[\"log\"].split(/[\\n\\t]+/).map!
+        {|item| JSON.parse(item)[\"log\"]}.any? ? record[\"log\"].split(/[\\n\\t]+/).map!
+        {|item| JSON.parse(item)[\"log\"]}.join(\"\") : record[\"log\"] rescue record[\"log\"]}\n
+        \ </record>\n</filter>\n# match all  container logs and label them @NORMAL\n<match
+        containers.**>\n  @type relabel\n  @label @NORMAL\n</match>\n<label @NORMAL>\n\n
+        \ # only match fluentd logs based on fluentd container log file name.\n  #
+        by default, this is <filter **collection-sumologic-fluentd**>\n  <filter **sumologic-fluentd**>\n
+        \   # only ingest:\n    #   - stacktraces (containing /usr/local)\n    #   -
+        fluentd logs of levels: {error, fatal}: `\\[error\\]|\\[fatal\\]`\n    #   -
+        warning messages if buffer is full `drop_oldest_chunk|retry succeeded`\n    @type
+        grep\n    <regexp>\n      key log\n      pattern /\\/usr\\/local|\\[error\\]|\\[fatal\\]|drop_oldest_chunk|retry
+        succeeded/\n    </regexp>\n  </filter>\n\n\n<filter **sumologic-otelcol**>\n
+        \ @type grep\n  <regexp>\n    key log\n    # Select only known error/warning/fatal/panic
+        levels or logs coming from one of the source known to provide useful data\n
+        \   pattern /\\\"level\\\":\\\"(error|warning|fatal|panic|dpanic)\\\"|\\\"caller\\\":\\\"(builder|service|kube|static)/\n
+        \ </regexp>\n</filter>\n\n  # third-party Kubernetes metadata  filter plugin\n
+        \ <filter containers.**>\n    @type kubernetes_metadata\n    @log_level error\n
+        \   @include logs.kubernetes.metadata.filter.conf\n  </filter>\n  # Sumo Logic
+        Kubernetes metadata enrichment filter plugin\n  <filter containers.**>\n    @type
+        enhance_k8s_metadata\n    @log_level error\n    @include logs.enhance.k8s.metadata.filter.conf\n
+        \ </filter>\n  \n  # Kubernetes Sumo Logic filter plugin\n  <filter containers.**>\n
+        \   @type kubernetes_sumologic\n    @include logs.kubernetes.sumologic.filter.conf\n
+        \   exclude_namespace_regex \"\"\n  </filter>\n  \n  \n  <match containers.**>\n
+        \   @type copy\n    <store>\n      @type sumologic\n      @id sumologic.endpoint.logs\n
+        \     sumo_client \"k8s_2.3.2\"\n      @log_level error\n      @include logs.output.conf\n
+        \     <buffer>\n        @type file\n        path /fluentd/buffer/logs.containers\n
+        \       @include buffer.output.conf\n      </buffer>\n    </store>\n  </match>\n</label>\n"
+    kubelet:
+      enabled: false
+    output:
+      addTimestamp: false
+    systemd:
+      enabled: false
+fullnameOverride: sumologic
+nameOverride: sumologic
+otelagent:
+  enabled: true
+sumologic:
+  accessId: <access_id>
+  accessKey: <access_key>
+  clusterName: he-prod-aks
+  traces:
+    enabled: true

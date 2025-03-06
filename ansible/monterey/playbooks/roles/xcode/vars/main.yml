@@ -1,0 +1,7 @@
+---
+# vars file for xcode
+xcode_xip_location: /Users/ltuser/Downloads/xcode_14.0.xip
+xcode_xip_directory: /Users/ltuser/Downloads
+xcode_major_version: 14
+xcode_xip_location_local: roles/xcode/files/xcode_14.0.xip
+xcode_xip_extraction_timeout: 800

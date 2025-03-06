@@ -1,0 +1,7 @@
+---
+- name: Setting up Languages on Mac
+  hosts: all
+  gather_facts: false
+
+  roles:
+    - role: python

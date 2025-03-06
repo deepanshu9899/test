@@ -1,0 +1,7 @@
+# install4j response file for Sumo Logic Collector 19.409-3
+installMethod=2
+sumo.token_and_url=U1VNTzN3cFYyUGgzTEdJVFk3TmRmVThwemZSOVc2dE1odHRwczovL2NvbGxlY3RvcnMuc3Vtb2xvZ2ljLmNvbQ\=\=
+sys.adminRights$Boolean=true
+sys.installationDir=/Applications/Sumo Logic Collector
+sys.languageId=en
+sys.programGroupDisabled$Boolean=true

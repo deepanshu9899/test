@@ -1,0 +1,100 @@
+fullnameOverride: sumologic
+kube-prometheus-stack:
+  enabled: true
+  defaultRules:
+    rules:
+      prometheus: true
+      prometheusOperator: true
+metadata:
+  logs:
+    enabled: false
+  metrics:
+    enabled: true
+    statefulset:
+      tolerations:
+      - effect: NoSchedule
+        key: "linux-extra-taint"
+        operator: Equal
+        value: "extra"
+      - effect: NoSchedule
+        key: "linux-worker-pool"
+        operator: Equal
+        value: "true"
+metrics-server:
+  enabled: false
+nameOverride: sumologic
+namespaceOverride: ""
+
+## Enable the opentelemetry-operator because we have made the metrics->collector->otelcol->enabled
+opentelemetry-operator:
+  enabled: true
+otelcolInstrumentation:
+  enabled: false
+otelevents:
+  statefulset:
+    tolerations:
+    - effect: NoSchedule
+      key: "linux-extra-taint"
+      operator: Equal
+      value: "extra"
+    - effect: NoSchedule
+      key: "linux-worker-pool"
+      operator: Equal
+      value: "true"
+otellogs:
+  daemonset:
+    tolerations:
+    - effect: NoSchedule
+      key: "linux-extra-taint"
+      operator: Equal
+      value: "extra"
+    - effect: NoSchedule
+      key: "linux-worker-pool"
+      operator: Equal
+      value: "true"
+  metrics:
+    enabled: true
+sumologic:
+  accessId: <Access ID>
+  accessKey: <Access KEY>
+  clusterName: he-prod-linux-cluster-aks
+  endpoint: ""
+  events:
+    enabled: true
+    provider: otelcol
+    sourceName: "events"
+    sourceCategory: "kubernetes/events"
+  logs:
+    enabled: false
+  metrics:
+    enabled: true
+    metadata:
+      provider: otelcol
+    collector:
+      otelcol:
+        enabled: true
+      tolerations:
+      - effect: NoSchedule
+        key: "linux-extra-taint"
+        operator: Equal
+        value: "extra"
+      - effect: NoSchedule
+        key: "linux-worker-pool"
+        operator: Equal
+        value: "true"
+  setup:
+    tolerations:
+    - effect: NoSchedule
+      key: "linux-extra-taint"
+      operator: Equal
+      value: "extra"
+    - effect: NoSchedule
+      key: "linux-worker-pool"
+      operator: Equal
+      value: "true"
+  traces:
+    enabled: false
+telegraf-operator:
+  enabled: false
+tracesGateway:
+  enabled: false

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Configuration status="INFO" strict="true" packages="com.sumologic.util.log">
+
+  <Appenders>
+    <RollingFile name="Application" filePattern="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector.log.%i"
+    fileName="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector.log">
+      <Filters>
+        <ThresholdFilter level="DEBUG" onMatch="ACCEPT" />
+      </Filters>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="5 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n"/>
+    </RollingFile>
+
+    <RollingFile name="trigger" filePattern="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector-stats.log.%i"
+      fileName="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector-stats.log">
+      <Filters>
+        <ThresholdFilter level="INFO" onMatch="ACCEPT" />
+      </Filters>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n"/>
+    </RollingFile>
+
+    <RollingFile name="metrics-reporter" filePattern="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/metrics-reporter.log.%i"
+      fileName="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/metrics-reporter.log">
+      <Filters>
+        <ThresholdFilter level="DEBUG" onMatch="ACCEPT" />
+      </Filters>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="5 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n"/>
+    </RollingFile>
+
+    <RollingFile name="JInterop" filePattern="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/jinterop.log.%i"
+      fileName="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/jinterop.log">
+      <Filters>
+        <ThresholdFilter level="TRACE" onMatch="ACCEPT" />
+      </Filters>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="5 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n"/>
+    </RollingFile>
+
+    <RollingFile name="collector-usage" filePattern="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector-usage.log.%i"
+                 fileName="${sys:SUMO_INSTALLATION_DIRECTORY:-.}/logs/collector-usage.log">
+      <Filters>
+        <ThresholdFilter level="TRACE" onMatch="ACCEPT" />
+      </Filters>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="5 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n"/>
+    </RollingFile>
+
+    <Routing name="Router">
+      <Routes pattern="$${env:IN_KUBERNETES:-$${env:EPHEMERAL_DEPLOYMENT:-false}}">
+        <Route ref="Application" key="false" />
+        <Route ref="Application" key="FALSE" />
+        <Route ref="Console" key="TRUE" />
+        <Route ref="Console" key="true" />
+      </Routes>
+    </Routing>
+
+  </Appenders>
+
+  <Loggers>
+
+    <logger name="com.sumologic.util.MetricsReporter" additivity="false" level="INFO">
+      <appender-ref ref="metrics-reporter"/>
+    </logger>
+
+    <logger name="com.sumologic.collector.monitoring.CollectorUsageLogger$" additivity="false" level="INFO">
+      <appender-ref ref="collector-usage"/>
+    </logger>
+
+    <!-- Disable all bug failures by default -->
+    <logger name="org.jinterop" additivity="false" level="ERROR">
+
+      <!--  To enable trace logging to Jinterop.log from collector, uncomment these lines.
+
+            <level value="TRACE"/>
+            <appender-ref ref="JInterop"/>
+      -->
+      <appender-ref ref="Application"/>
+    </logger>
+
+    <Root level="INFO" includeLocation="false">
+      <AppenderRef ref="Router"/>
+    </Root>
+  </Loggers>
+
+</Configuration>

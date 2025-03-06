@@ -1,0 +1,75 @@
+name: Upload Binaries to S3 and Share Download Links
+
+on: 
+  workflow_dispatch:
+
+env:
+  S3_BUCKET_PATH: prod-common-downloads-v1/hyperexecute/
+
+jobs:
+  upload-to-s3:
+    runs-on: ubuntu
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Set Environment to PROD
+        run: |
+          echo "AWS_DISTRIBUTION_ID=E3I7O654K0EXS8" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID_PROD" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY_PROD" >> $GITHUB_ENV
+          echo "AWS_DEVOPS_BUCKET=AWS_DEVOPS_BUCKET_PROD" >> $GITHUB_ENV
+
+      - name: Download Binaries
+        run: |
+          curl -L -o test-link-attach-win.exe https://github.com/swapnilrlambda/LT-downloads/releases/download/LT/test-link-attach-win.exe
+          curl -L -o testplan-discovery-win.exe https://github.com/swapnilrlambda/LT-downloads/releases/download/LT/testplan-discovery-win.exe
+          curl -L -o testplan-status-update-win.exe https://github.com/swapnilrlambda/LT-downloads/releases/download/LT/testplan-status-update-win.exe
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: us-east-1
+
+      - name: Upload Binaries to S3
+        run: |
+          aws s3 cp test-link-attach-win.exe s3://${{ env.S3_BUCKET_PATH }}test-link-attach-win.exe
+          aws s3 cp testplan-discovery-win.exe s3://${{ env.S3_BUCKET_PATH }}testplan-discovery-win.exe
+          aws s3 cp testplan-status-update-win.exe s3://${{ env.S3_BUCKET_PATH }}testplan-status-update-win.exe
+      
+      - name: invalidate cloudfront
+        uses: LambdaTest/invalidate-cloudfront-and-wait@v1.0.0
+        env:
+          DISTRIBUTION_IDS: E20VOL3HUR6V7R
+          PATHS: '/hyperexecute/test-link-attach-win.exe,/hyperexecute/testplan-discovery-win.exe,/hyperexecute/testplan-status-update-win.exe'
+          AWS_REGIONS: 'us-east-1'
+          AWS_ACCESS_KEY_IDS: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          AWS_SECRET_ACCESS_KEYS: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+
+      - name: Cloudflare Purge
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/d8e90b72cf4a75fc43f920dd58973961/purge_cache" \
+          -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}" \
+          -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_AUTH_KEY }}" \
+          -H "Content-Type: application/json" \
+          --data '{"files":["https://downloads.lambdatest.com/hyperexecute/testplan-discovery-win.exe","https://downloads.lambdatest.com/hyperexecute/testplan-status-update-win.exe","https://downloads.lambdatest.com/hyperexecute/test-link-attach-win.exe"]}' 
+          
+      - name: Generate Download Links
+        run: |
+          echo "Binary Download Links:"
+          echo "Testplan Discovery: https://downloads.lambdatest.com/hyperexecute/testplan-discovery-win.exe"
+          echo "Testplan Status: https://downloads.lambdatest.com/hyperexecute/testplan-status-update-win.exe"
+          echo "Test Link Attachment: https://downloads.lambdatest.com/hyperexecute/test-link-attach-win.exe"
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"

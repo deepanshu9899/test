@@ -1,0 +1,39 @@
+name: Cleanup Schedule for Docker Image Tags
+on:
+  # schedule:
+  #   - cron: "45 12 * * 3" # At 12:45 on Wednesday
+  workflow_dispatch:
+    
+jobs:
+  cleanup:
+    name: Cleanup the unused Docker image versions
+    runs-on: ubuntu
+    environment: ${{github.ref_name}}-withoutapproval
+    env:
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+      CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Run Python cleanup script
+        working-directory: "azure-automation/cleanup"
+        run: |
+          ls -lah
+          python --version
+          python docker-image-cleanup.py

@@ -1,0 +1,10 @@
+---
+- name: Download python pkgs
+  include: download_python_loop.yml
+  with_items:
+    - python-3.5.10-darwin-x64.tar.gz
+    - python-3.6.8-macosx.pkg
+    - python-3.7.9-macosx.pkg
+    - python-3.8.10-macosx.pkg
+    - python-3.9.13-macosx.pkg
+    - python-3.10.11-macosx.pkg

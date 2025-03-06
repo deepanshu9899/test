@@ -1,0 +1,21 @@
+---
+- name: Move to correct dir
+  shell: |
+    mkdir -p {{ backup_scripts_path }}/lambda/shared-tools/volume/certs/
+    rm -rf {{ backup_scripts_path }}/lambda/shared-tools/volume/certs/*
+
+- name: Download self signed cert
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/lambda/shared-tools/volume/certs/lambdatest.crt
+    dest: "{{ backup_scripts_path }}/lambda/shared-tools/volume/certs/lambdatest.crt"
+
+- name: Download self signed key
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/lambda/shared-tools/volume/certs/lambdatest.key
+    dest: "{{ backup_scripts_path }}/lambda/shared-tools/volume/certs/lambdatest.key"

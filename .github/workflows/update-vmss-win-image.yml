@@ -1,0 +1,201 @@
+name: Update VMSS Windows Image
+on:
+  workflow_dispatch:
+    inputs:
+      os_version:
+        type: choice
+        required: true
+        description: OS-version
+        options:
+          - win10
+          - win11
+
+      resource_group:
+        type: choice
+        description: Select the resources Group Name
+        required: true
+        default: "Hypertest-Production"
+        options:
+          - Hypertest-Production
+          - hyperexecute-prod-extended
+
+      gallery_name:
+        type: choice
+        description: Image gallery
+        required: true
+        default: "hypertest_prod_images"
+        options:
+          - hypertest_prod_images
+          - hyperexecuteExtendedProdImageGallery
+
+      image_definition:
+        type: choice
+        description: Image definition
+        required: true
+        default: "hypertest-prod"
+        options:
+          - hypertest-prod
+          - hypertest-prod-wind-11
+          - hyperexecuteProdVMImage
+          - hyperexecuteProdImage-wind-11
+
+      image_version:
+        description: Image version
+        required: true
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo "ALL THE INPUTS PROVIDED IN WORKFLOW TRIGGER "
+          echo os_version       : "${{ github.event.inputs.os_version }}"
+          echo resource_group   : "${{ github.event.inputs.resource_group }}"
+          echo gallery_name     : "${{ github.event.inputs.gallery_name }}"
+          echo image_definition : "${{ github.event.inputs.image_definition }}"
+          echo image_version    : "${{ github.event.inputs.image_version }}"
+
+  update-image:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu
+    outputs:
+      ENV_OS: ${{ steps.set-env-os.outputs.ENV_OS }}
+      SUBSCRIPTION_Id: ${{ steps.set-env-os.outputs.SUBSCRIPTION_Id }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Setup Environment Variable
+        shell: bash
+        id: set-env-os
+        run: |
+          ENV_OS="${{ github.ref_name }}_${{ github.event.inputs.os_version }}" #prod_win10 #prod_msft-win10
+          echo "ENV_OS=${{ github.ref_name }}_${{ github.event.inputs.os_version }}" >> $GITHUB_ENV
+          echo "ENV_OS=${{ github.ref_name }}_${{ github.event.inputs.os_version }}" >> $GITHUB_OUTPUT
+          echo "VMSS TYPE" $ENV_OS
+
+          if [[ $ENV_OS == *msft* ]]; then
+            echo "The MSFT subscription is picked up ..."
+            echo SUBSCRIPTION_Id ${{ vars.AZURE_MSFT_SUBSCRIPTION_ID }}
+            echo "SUBSCRIPTION_Id=${{ vars.AZURE_MSFT_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "SUBSCRIPTION_Id=${{ vars.AZURE_MSFT_SUBSCRIPTION_ID }}" >> $GITHUB_OUTPUT
+          else
+            echo "The HYP subscription is picked up ..."
+            echo SUBSCRIPTION_Id ${{ vars.AZURE_MSFT_SUBSCRIPTION_ID }}
+            echo "SUBSCRIPTION_Id=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "SUBSCRIPTION_Id=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Fail safe
+        run: |
+          echo ENV OS: $ENV_OS
+          cat servers.ini
+
+      - name: Check Gallery Image Replication Regions
+        id: check-image-replication
+        env:
+          vmssType: ${{ env.ENV_OS }}
+          subscriptionId: ${{ env.SUBSCRIPTION_Id }}
+          resourceGroup: ${{ github.event.inputs.resource_group }}
+          imageGallery: ${{ github.event.inputs.gallery_name }}
+          imageDefinition: ${{ github.event.inputs.image_definition }}
+          imageVersion: ${{ github.event.inputs.image_version }}
+        run: |
+          echo $vmssType $resourceGroup $subscriptionId $imageGallery $imageDefinition $imageVersion
+          replication_regions=$(az sig image-version show --resource-group "$resourceGroup" --gallery-name $imageGallery --gallery-image-definition $imageDefinition --gallery-image-version $imageVersion --query "publishingProfile.targetRegions[].name")
+          echo "Replication_regions:" $replication_regions
+          lower_regions=$(echo $replication_regions | jq 'map(ascii_downcase)')
+          echo "lower_regions ": $lower_regions
+
+          # Check if 'regions' contains "eastus" and "westus"
+          contains_eastus=$(echo $lower_regions | jq 'contains(["east us"])')
+          contains_westeurope=$(echo $lower_regions | jq 'contains(["west europe"])')
+          contains_centralindia=$(echo $lower_regions | jq 'contains(["central india"])')
+
+          # Check if the regions are there for the image
+          if [ "$contains_eastus" = "true" ] && [ "$contains_westeurope" = "true" ] && [ "$contains_centralindia" = "true" ]; then 
+            echo "Regions East US, West Europe, Central India are present in the replication regions."
+          elif [ ${{ github.event.inputs.os_version }} = "win11" ]; then
+            echo "This is Windows 11, bypassing this as win11 is only in East US for now"
+          else 
+            echo "Any or All regions East US, West Europe, Central India are NOT present in image replication."
+            exit 1
+          fi
+
+      - name: Run VMSS update script
+        if: steps.check-image-replication.outcome == 'success'
+        id: update-vmss
+        env:
+          vmssType: ${{ env.ENV_OS }}
+          subscriptionId: ${{ env.SUBSCRIPTION_Id }}
+          resourceGroup: ${{ github.event.inputs.resource_group }}
+          imageGallery: ${{ github.event.inputs.gallery_name }}
+          imageDefinition: ${{ github.event.inputs.image_definition }}
+          imageVersion: ${{ github.event.inputs.image_version }}
+        run: |
+          echo $vmssType $resourceGroup $subscriptionId $imageGallery $imageDefinition $imageVersion
+          inventory='servers.ini'
+          values=$(awk -F '=' '/\['$vmssType'\]/{flag=1;next} /\[/{flag=0} flag {print $vmssType}' $inventory)
+          echo VMSS LIST $values
+          echo UPDATING VMs With New OS IMAGE ...
+          update_vmss() {
+            local value=$1
+            echo "Updating $value ..."
+            if az vmss update --name "$value" --resource-group "$resourceGroup" --set virtualMachineProfile.storageProfile.imageReference.id="/subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.Compute/galleries/$imageGallery/images/$imageDefinition/versions/$imageVersion" >> "$value.log"; then
+              echo "Successfully Updated $value!"
+            else
+              echo "Failed to update $value!" >> "$value.log"
+            fi
+          }
+
+          export -f update_vmss
+
+          # Run the updates in parallel in batches of 5
+          echo "${values[@]}" | xargs -n 1 -P 5 -I {} bash -c 'update_vmss "$@"' _ {}
+
+  verify-image:
+    environment: ${{ github.ref_name }}-withoutapproval
+    runs-on: ubuntu
+    needs: [update-image]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Verify Images Updation
+        env:
+          vmssType: ${{ needs.update-image.outputs.ENV_OS }}
+          subscriptionId: ${{ needs.update-image.outputs.SUBSCRIPTION_Id}}
+          resourceGroup: ${{ github.event.inputs.resource_group }}
+        run: |
+          echo $resourceGroup $subscriptionId
+          inventory='servers.ini'
+          values=$(awk -F '=' '/\['$vmssType'\]/{flag=1;next} /\[/{flag=0} flag {print $vmssType}' $inventory)
+
+          echo vmssType: $vmssType
+          echo VMSS LIST: $values
+          echo OS IMAGE IDs OF THE UPDATED VMSS ...
+          for value in $values
+          do
+            image_id=$(az vmss show --resource-group $resourceGroup --subscription $subscriptionId --name $value --query virtualMachineProfile.storageProfile.imageReference.id --output tsv)
+            if [ $? -eq 0 ]; then
+                echo "Image id for $value is $image_id"
+            else
+                echo "Failed to fetch image id for $value"
+            fi
+          done

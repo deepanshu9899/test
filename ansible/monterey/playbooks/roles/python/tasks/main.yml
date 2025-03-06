@@ -1,0 +1,4 @@
+# tasks file for python
+- name: Installing Python
+  become: true
+  ansible.builtin.import_tasks: python_check.yml

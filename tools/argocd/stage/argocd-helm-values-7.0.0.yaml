@@ -1,0 +1,202 @@
+configs:
+  cm:
+    create: true
+    url: https://argocd-stage-hyperexecute.lambdatestinternal.com
+    dex.config: |
+      logger:
+          level: debug
+          format: json
+      connectors:
+      - type: microsoft
+        id: microsoft
+        name: LT
+        config:
+          clientID: c491975d-c6ca-495d-b456-22f000ed867b
+          clientSecret: $oidc.azure.clientSecret
+          redirectURI: https://argocd-stage-hyperexecute.lambdatestinternal.com/api/dex/callback
+          tenant: 1729f899-18eb-4d3c-ac9f-73e14fb84c0c
+          groups:
+            - hyperexecute-admin
+            - hyperexecute-dev
+
+  secret:
+    extra:
+      oidc.azure.clientSecret: <Client Secret>
+
+  rbac:
+    policy.csv: |
+      g, "hyperexecute-dev", role:readonly
+      g, "hyperexecute-admin", role:admin
+    policy.default: role:''
+    scopes: "[groups, email]"
+
+applicationSet:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: pool
+                operator: In
+                values:
+                  - userpool
+  nodeSelector:
+    pool: userpool
+  replicas: 1
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+controller:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: pool
+                operator: In
+                values:
+                  - userpool
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+  replicas: 1
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  serviceAccount:
+    automountServiceAccountToken: true
+    create: true
+crds:
+  install: true
+  keep: false
+dex:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: pool
+                operator: In
+                values:
+                  - userpool
+  enabled: true
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+global:
+  domain: argocd-stage-hyperexecute.lambdatestinternal.com
+notifications:
+  enabled: false
+redis:
+  nodeSelector:
+    pool: userpool
+redis-ha:
+  enabled: false
+  affinity: |
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  exporter:
+    enabled: false
+  haproxy:
+    enabled: false
+    metrics:
+      enabled: false
+  nodeSelector:
+    pool: userpool
+repoServer:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: pool
+                operator: In
+                values:
+                  - userpool
+  autoscaling:
+    enabled: true
+    maxReplicas: 2
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+
+  nodeSelector:
+    pool: userpool
+  resources:
+    limits:
+      cpu: "1"
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+server:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: pool
+                operator: In
+                values:
+                  - userpool
+  autoscaling:
+    behavior: {}
+    enabled: true
+    maxReplicas: 2
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    enabled: true
+    hosts:
+      - argocd-stage-hyperexecute.lambdatestinternal.com
+    https: true
+    ingressClassName: nginx
+    tls:
+      - hosts:
+          - argocd-stage-hyperexecute.lambdatestinternal.com
+        secretName: argocd-tls-certificate
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 125m
+      memory: 128Mi

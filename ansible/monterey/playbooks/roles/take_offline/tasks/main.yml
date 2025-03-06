@@ -1,0 +1,6 @@
+---
+# tasks file for take_offline
+- name: Move controller out
+  ansible.builtin.file:
+    path: "/Users/{{ ansible_user }}/scripts/controller.sh"
+    state: absent

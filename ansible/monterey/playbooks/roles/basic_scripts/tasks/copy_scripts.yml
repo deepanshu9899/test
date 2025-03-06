@@ -1,0 +1,61 @@
+---
+- name: Copy scripts backup to remote
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}"
+    dest: "/Users/{{ ansible_user }}/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Copy scripts
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}/scripts"
+    dest: "/Users/{{ ansible_user }}/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Copy env
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}/env/.env"
+    dest: "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Copy crt
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}/certificates/certificate.crt"
+    dest: "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Copy key
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}/certificates/certificate.key"
+    dest: "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Fix permission
+  shell: |
+    chmod 400 "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/certificate.crt"
+    chmod 400 "/Users/{{ ansible_user }}/lrc/lambda-node-remote-client/certificate.key"
+
+- name: Fix file ownership
+  become: true
+  ansible.builtin.file:
+    recurse: true
+    owner: "{{ ansible_user }}"
+    path: "{{ item }}"
+    group: staff
+  loop:
+    - /Users/ltuser/hyperexecute_mac_content
+    - /Users/ltuser/scripts

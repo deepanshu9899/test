@@ -1,0 +1,60 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "name": "DeleteBlobsOlderThan7Days",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 7
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": [
+            "quickrun/",
+            "jobs/",
+            "hypertest-vm-logs/",
+            "misc/logs",
+            "misc/git-info",
+            "agents",
+            "artefacts/",
+            "reports/",
+            "misc/raw-yaml"
+          ]
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "name": "DeleteBlobsOlderThan14Days",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 14
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": [
+            "cache/",
+            "uploads/",
+            "task-logs/",
+            "cache-directories/",
+            "uploads-config/",
+            "hyperexecute-capability-cache/",
+            "analyze/",
+            "screenshots/",
+            "stage-magicleap-screenshots-v1/"
+          ]
+        }
+      }
+    }
+  ]
+}

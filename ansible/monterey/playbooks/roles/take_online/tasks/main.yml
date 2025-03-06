@@ -1,0 +1,10 @@
+---
+# tasks file for take_online
+- name: Copy controller
+  ansible.posix.synchronize:
+    src: "{{ backup_scripts_path }}/scripts/controller.sh"
+    dest: "/Users/{{ ansible_user }}/scripts/"
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'

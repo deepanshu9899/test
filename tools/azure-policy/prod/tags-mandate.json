@@ -1,0 +1,78 @@
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "in": [
+            "Microsoft.Compute/virtualMachines",
+            "Microsoft.Compute/virtualMachineScaleSets",
+            "Microsoft.Compute/disks",
+            "Microsoft.Network/networkSecurityGroups",
+            "Microsoft.Network/natGateways",
+            "Microsoft.ContainerService/ManagedClusters",
+            "Microsoft.Network/publicIPAddresses",
+            "Microsoft.Storage/storageAccounts",
+            "Microsoft.Compute/galleries",
+            "Microsoft.ContainerRegistry/registries",
+            "Microsoft.DBforMySQL/flexibleServers"
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "field": "[concat('tags[', parameters('tagName1'),  ']')]",
+              "exists": "false"
+            },
+            {
+              "field": "[concat('tags[', parameters('tagName2'),  ']')]",
+              "exists": "false"
+            },
+            {
+              "field": "[concat('tags[', parameters('tagName3'),  ']')]",
+              "exists": "false"
+            },
+            {
+              "field": "[concat('tags[', parameters('tagName4'),  ']')]",
+              "exists": "false"
+            }
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "parameters": {
+    "tagName1": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Environment",
+        "description": "Environment of resource, values could be 'stage', 'prod', 'dev', 'poc'"
+      }
+    },
+    "tagName2": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Creator",
+        "description": "Person who is creating the resource"
+      }
+    },
+    "tagName3": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Product",
+        "description": "Name for product"
+      }
+    },
+    "tagName4": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Jira",
+        "description": "Jira ticket for the purpose of resource"
+      }
+    }
+  }
+}

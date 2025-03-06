@@ -1,0 +1,21 @@
+---
+- name: Move to correct dir
+  shell: |
+    mkdir -p "{{ backup_scripts_path }}/certificates"
+    rm -rf "{{ backup_scripts_path }}/certificates"/*
+
+- name: Download lambda certificate.crt
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/certificates/certificate.crt
+    dest: "{{ backup_scripts_path }}/certificates/certificate.crt"
+
+- name: Download lambda certificate.key
+  azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/certificates/certificate.key
+    dest: "{{ backup_scripts_path }}/certificates/certificate.key"

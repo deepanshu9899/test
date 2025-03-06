@@ -1,0 +1,292 @@
+name: "Create OS Gallery Image"
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group_name:
+        type: choice
+        description: Select the resources Group Names
+        required: true
+        default: "Hypertest-Production"
+        options:
+          - Hypertest-Production
+          - hyperexecute-prod-extended
+          - hype_msft_prod
+      image_gallery_name:
+        type: choice
+        required: true
+        description: Select the Gallery for Image Creation
+        default: "hypertest_prod_images"
+        options:
+          - hypertest_prod_images
+          - hyperexecuteExtendedProdImageGallery
+          - hypmsftprod_compute_gallery
+      gallery_image_definition:
+        type: choice
+        description: Select the destination for Image
+        required: true
+        default: "hypertest-prod"
+        options:
+          - hypertest-prod
+          - hypertest-prod-wind-11
+          - hyperexecuteProdVMImage
+          - hyperexecuteProdImage-wind-11
+          - hyperexecute-squid-proxy
+          - hye-prod-win10-amdocs-ginger-image
+          - hye_prod_win10_gallery
+          - hye_prod_win11_gallery
+      gallery_image_version_to_create:
+        type: string
+        required: true
+        description: Provide the incremental version of the image
+      image_creation_source:
+        type: choice
+        description: Select the Source for Image Creation
+        required: true
+        default: "Virtual Machine"
+        options:
+          - Virtual Machine
+          - Managed Disk
+          - Managed Image
+          - Another Image Version
+          - Snapshot of OS disk
+      image_creation_source_id:
+        description: Add the image creation source ID
+        type: string
+        required: true
+      jira:
+        description: Add Jira ticket number
+        type: string
+        required: true
+
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+      resource_group_name:
+        type: string
+        required: true
+
+      image_creation_source:
+        type: string
+        required: true
+        default: "Virtual Machine"
+
+      virtual_machine_name:
+        type: string
+        description: The name of VM to create
+        required: true
+
+      trigger_source:
+        type: string
+        description: The trigger source specification
+        required: true
+        default: workflow_dispatch
+
+      older_source_image_id:
+        type: string
+        description: The Current created VM image ID passed from vm creation workflow
+        required: true
+      
+      gallery_image_version_to_create:
+        type: string
+        required: true
+        description: Provide the incremental version of the image
+
+      jira:
+        type: string
+        required: true
+permissions: {}
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo "ALL THE INPUTS PROVIDED IN WORKFLOW DISPATCH/TRIGGER"
+          echo resource_group_name          : "${{ inputs.resource_group_name }}"
+          echo image_gallery_name           : "${{ inputs.image_gallery_name }}"
+          echo virtual_machine_name         : "${{ inputs.virtual_machine_name }}"
+          echo gallery_image_definition     : "${{ inputs.gallery_image_definition }}"
+          echo gallery_image_version_to_create : "${{ inputs.gallery_image_version_to_create }}"
+          echo image_creation_source        : "${{ inputs.image_creation_source }}"
+          echo image_creation_source_id     : "${{ inputs.image_creation_source_id }}"
+          echo jira                         : "${{ inputs.jira }}"
+
+  gallery-image-creation:
+    name: Create the specialised image and store in image gallery
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.resource_group_name == 'hype_msft_prod' && 'msft_prod' || github.ref_name}}
+
+
+    env:
+      RESOURCE_GROUP_NAME: "${{ inputs.resource_group_name }}"
+      IMAGE_GALLERY_NAME: "${{ inputs.image_gallery_name }}"
+      GALLERY_IMAGE_DEFINITION: "${{ inputs.gallery_image_definition }}"
+      GALLERY_IMAGE_VERSION_TO_CREATE: "${{ inputs.gallery_image_version_to_create }}"
+      IMAGE_CREATION_SOURCE: "${{ inputs.image_creation_source }}"
+      IMAGE_CREATION_SOURCE_ID: "${{ inputs.image_creation_source_id }}"
+      VIRTUAL_MACHINE_NAME: "${{ inputs.virtual_machine_name }}"
+      TRIGGER_SOURCE: "${{ inputs.trigger_source || 'workflow_dispatch' }}"
+      JIRA: "${{ inputs.jira }}"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Azure login for hyperexecute-prod-extended
+        if: inputs.resource_group_name == 'hyperexecute-prod-extended'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+      - name: Azure login for hyperexecute-prod-extended
+        if: inputs.resource_group_name == 'hype_msft_prod'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
+      - name: Azure login for other resource groups
+        if: inputs.resource_group_name != 'hyperexecute-prod-extended' && inputs.resource_group_name != 'hype_msft_prod'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Set Subscription ID
+        id: set-subscription-id
+        run: |
+         if [ "${{ inputs.resource_group_name }}" == "hyperexecute-prod-extended" ] || [ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]; then
+            echo "Using AZURE_SUBSCRIPTION_ID_MSFT"
+            echo "SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}" >> $GITHUB_ENV
+          else
+            echo "Using AZURE_SUBSCRIPTION_ID"
+            echo "SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          fi
+        
+      - name: Format the image creation source as a flag for command
+        id: formatting-flag
+        run: |
+          image_creation_source="${{ inputs.image_creation_source }}"
+          creation_source=""
+          case $image_creation_source in
+            "Virtual Machine")
+              creation_source=--virtual-machine
+              ;;
+            "Managed Disk")
+              creation_source=--os-snapshot
+              ;;
+            "Another Image Version")
+              creation_source=--image-version
+              ;;
+            "Managed Image")
+              creation_source=--managed-image
+              ;;
+            *)
+              creation_source=--virtual-machine
+              ;;
+          esac
+          echo $creation_source
+          echo "creation_source=$creation_source" >> $GITHUB_OUTPUT
+
+      - name: Stop the VM before starting to capture
+        run: |
+          if [ "$IMAGE_CREATION_SOURCE" == "Virtual Machine" ] && [ "$TRIGGER_SOURCE" == "workflow_call" ]; then
+            echo "FROM WORKFLOW CALL : Source is Virtual Machine, Stopping the Virtual Machine first ..."
+            az vm stop --name "$VIRTUAL_MACHINE_NAME" --resource-group "$RESOURCE_GROUP_NAME"
+            echo "Virtual Machine Stopped !"
+          else
+            echo "FROM WORKFLOW DISPATCH : Source is Virtual Machine, Stopping the Virtual Machine first ..."
+            az vm stop --ids "$IMAGE_CREATION_SOURCE_ID"
+            echo "Virtual Machine Stopped !"
+          fi
+
+      - name: Run Script to capture gallery image via dispatch
+        if: ${{ env.TRIGGER_SOURCE == 'workflow_dispatch' }}
+        run: |
+          image_version=${{ inputs.gallery_image_version_to_create }}
+          # Determine region based on the resource group and branch
+          if [ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]; then
+            REGION="eastus2"
+          elif [ "${{ inputs.resource_group_name }}" == "hyperexecute-prod-extended" ]; then
+            REGION="eastus eastus2"
+          else
+           case "${{ github.ref_name }}" in
+            "stage")
+              REGION="eastus centralindia"
+          ;;
+            "prod")
+              REGION="eastus centralindia westeurope"
+          ;;
+           *)
+              REGION="eastus"
+          ;;
+           esac
+          fi
+          
+          echo "Using region: $REGION"
+          echo "Starting with the Image Creation with version $image_version ..."
+          az sig image-version create --resource-group "${{ inputs.resource_group_name }}" \
+            --gallery-name "${{ inputs.image_gallery_name }}" \
+            --gallery-image-definition "${{ inputs.gallery_image_definition }}" \
+            --gallery-image-version "$image_version" \
+            --storage-account-type Premium_LRS \
+            --replica-count 1 \
+            --target-regions $REGION \
+            --no-wait \
+            --tags "Creator=${{ github.actor }}" "Environment=${{ github.ref_name }}" "Jira=${{ inputs.jira }}" "Product=hyperexecute" \
+            ${{ steps.formatting-flag.outputs.creation_source }} "${{ inputs.image_creation_source_id }}"
+          echo "Image Creation Complete !"
+
+      - name: Install awk in the runner
+        run: sudo apt-get update && sudo apt-get install -y gawk
+
+      - name: Run Script to capture gallery image via workflow call
+        if: ${{ env.TRIGGER_SOURCE == 'workflow_call' }}
+        env:
+          SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
+        run: |
+          export older_source_image_id=${{ inputs.older_source_image_id }}
+          GALLERY_NAME=$(echo "$older_source_image_id" | awk -F '/' '{print $9}')
+          GALLERY_IMAGE_DEFINITION=$(echo "$older_source_image_id" | awk -F '/' '{print $11}')
+          echo "GALLERY_NAME: $GALLERY_NAME"
+          echo "GALLERY_IMAGE_DEFINITION: $GALLERY_IMAGE_DEFINITION"
+
+          image_version=${{ inputs.gallery_image_version_to_create }}
+          echo "Starting with the Image Creation with version $image_version ..."
+
+          # Determine region based on the resource group
+           # Determine region based on the resource group and branch
+          if [ "${{ inputs.resource_group_name }}" == "hype_msft_prod" ]; then
+            REGION="eastus2"
+          elif [ "${{ inputs.resource_group_name }}" == "hyperexecute-prod-extended" ]; then
+            REGION="eastus eastus2"
+          else
+           case "${{ github.ref_name }}" in
+            "stage")
+              REGION="eastus centralindia"
+          ;;
+            "prod")
+              REGION="eastus centralindia westeurope"
+          ;;
+           *)
+              REGION="eastus"
+          ;;
+           esac
+          fi
+          echo "Using region: $REGION"
+
+          # Create image version and replicate in different regions
+          az sig image-version create --resource-group $RESOURCE_GROUP_NAME \
+            --gallery-name $GALLERY_NAME \
+            --gallery-image-definition $GALLERY_IMAGE_DEFINITION \
+            --gallery-image-version $image_version \
+            --storage-account-type Premium_LRS \
+            --replica-count 1 \
+            --target-regions $REGION \
+            --no-wait \
+            --tags "Creator=${{ github.actor }}" "Environment=${{ github.ref_name }}" "Jira=${{ inputs.jira }}" "Product=hyperexecute" "Purpose=Browser Automation" \
+            --virtual-machine "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Compute/virtualMachines/$VIRTUAL_MACHINE_NAME"
+
+          echo "Image Creation Complete!"

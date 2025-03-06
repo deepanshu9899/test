@@ -1,0 +1,6 @@
+---
+- name: Test basic scripts
+  hosts: localhost
+  remote_user: root
+  roles:
+    - basic_scripts # noqa: syntax-check[specific]

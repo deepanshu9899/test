@@ -1,0 +1,174 @@
+name: Update Browser In Image
+on:
+  workflow_dispatch:
+    inputs:
+      virtual_machine_name:
+        type: string
+        description: Enter the machine name
+        required: true
+
+      resource_group_name:
+        type: choice
+        description: Select the resources Group Names
+        required: true
+        default: "Hypertest-Production"
+        options:
+          - Hypertest-Production
+          - hyperexecute-prod-extended
+
+      update_arguments:
+        type: string
+        description: Enter the requirement - latest (Top 10 browser versions only) OR specific version (Name-BrowserVersion-DriverVersion) OR no-install
+        required: true
+        default: "latest"
+
+      deletion_arguments:
+        type: choice
+        description: Keep only top 10 versions (Select no if installing specific versions)
+        required: true
+        options:
+          - yes
+          - no
+
+  workflow_call:
+    inputs:
+      virtual_machine_name:
+        type: string
+        required: true
+
+      resource_group_name:
+        type: string
+        required: true
+
+      update_arguments:
+        type: string
+        required: true
+
+      deletion_arguments:
+        type: string
+        required: true
+
+      external_call:
+        type: string
+
+jobs:
+  verify-inputs:
+    name: Verify the provided Inputs
+    runs-on: ubuntu
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Show the Workflow trigger inputs
+        run: |
+          echo " ALL THE INPUTS PROVIDED IN WORKFLOW TRIGGER "
+          echo "virtual_machine_name       : ${{ github.event.inputs.virtual_machine_name }}"
+          echo "resource_group_name        : ${{ github.event.inputs.resource_group_name }}"
+          echo "update_arguments           : ${{ github.event.inputs.update_arguments }}"
+          echo "deletion_arguments         : ${{ github.event.inputs.deletion_arguments }}"
+          echo "external_call              : ${{ github.event.inputs.external_call }}"
+
+  update-browsers-in-image:
+    name: Update browsers in image
+    runs-on: ubuntu
+    environment: ${{ github.ref_name }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Modifying VM Name input
+        run: |
+          virtual_machine_name="${{ inputs.virtual_machine_name }}"
+          if [ "${{ inputs.external_call }}" == "True" ]; then
+            echo "Workflow call"
+            modified_vm_name="$(echo "$virtual_machine_name" | sed 's/[[:space:]]*$//' | tr -s ' ' '-' | sed 's/^\(.\{1,16\}\).*$/\1/')-$(date +'%d%m%Y')"
+          else
+            modified_vm_name=${{ inputs.virtual_machine_name }}
+          fi 
+          echo "modified vmname is $modified_vm_name"
+          echo "modified_vm_name=${modified_vm_name}" >> $GITHUB_ENV
+
+      - name: Console the event that triggered this
+        run: |
+          echo ""
+          echo "See the actor name:       ${{ github.triggering_actor }}"
+          echo "See the workflow name:    ${{ github.workflow}}"
+          echo "See external call:        ${{ inputs.external_call }}"
+
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+
+      - name: Gather machine ip and os type
+        run: |
+          publicIp=$(az vm show -d -g ${{ inputs.resource_group_name }} -n ${{ env.modified_vm_name }} --query publicIps --output tsv)
+          echo "machine_ip=${publicIp}" >> $GITHUB_ENV
+          imageReferenceId=$(az vm get-instance-view --resource-group ${{ inputs.resource_group_name }} --name ${{ env.modified_vm_name }} --query 'storageProfile.imageReference.id' --output tsv)
+          if [[ $imageReferenceId == *hypertest-prod-wind-11* ]]; then
+              os_version="windows-11"
+              echo "os_type=${os_version}" >> $GITHUB_ENV
+          else
+              os_version="windows-10"
+              echo "os_type=${os_version}" >> $GITHUB_ENV
+          fi
+
+      - name: View inputs
+        run: |
+          echo "View collected inputs"
+          echo "Machine IP            : ${{ env.machine_ip }}"
+          echo "Machine Name          : ${{ env.modified_vm_name }}"
+          echo "Resource group name   : ${{ inputs.resource_group_name }}"
+          echo "OS Type               : ${{ env.os_type }}"
+          echo "Update Arguments      : ${{ inputs.update_arguments }}"
+          echo "Deletion Arguments    : ${{ inputs.deletion_arguments }}"
+          echo "External call         : ${{ inputs.external_call }}"
+
+      - name: Validate system state
+        run: |
+          if az vm show -g ${{ inputs.resource_group_name }} -n "${{ env.modified_vm_name }}" -d > /dev/null 2>&1; then
+              powerState=$(az vm show -g ${{ inputs.resource_group_name }} -n "${{ env.modified_vm_name }}" -d --query "powerState" -o tsv)
+              if [[ "$powerState" == "VM running" ]]; then
+                  echo "VM exists and is in running state"
+              else
+                  echo "ERROR -> VM exists but is in abnormal state"
+              fi
+          else
+              echo "ERROR -> VM does not exist"
+          fi
+
+      - name: Install python dependencies
+        run: |
+          pip3 install "ansible[azure]" pywinrm "requests[ntlm]" "requests[security]" requests pyYAML pypsrp
+          chmod u+x /home/runner/work/hyperexecute-devops/hyperexecute-devops/tools/update-browser/create_inventory.sh
+          chmod u+x /home/runner/work/hyperexecute-devops/hyperexecute-devops/tools/update-browser/create_ansible_playbook.sh
+          ls -la
+
+      - name: Creating inventory
+        run: |
+          ./tools/update-browser/create_inventory.sh ${{ env.machine_ip }}
+
+      - name: Check the inv file
+        run: |
+          cat inventory.ini
+
+      - name: Creating ansible playbook
+        run: |
+          pathofscript="/tools/update-browser/update_browsers.py"
+          ./tools/update-browser/create_ansible_playbook.sh $pathofscript ${{ inputs.update_arguments }} ${{ inputs.deletion_arguments }} ${{ env.os_type }}
+
+      - name: Check the playbook file
+        run: |
+          cat playbook.yml
+
+      - name: Opening port 5985 on the ${{ env.modified_vm_name }} VM
+        run: |
+          az vm open-port -g ${{ inputs.resource_group_name }} -n ${{ env.modified_vm_name }} --port 5985 --priority 310
+
+      - name: Wait for port open
+        run: sleep 60s
+        shell: bash
+
+      - name: Executing playbook to update browsers
+        run: ansible-playbook -i inventory.ini playbook.yml

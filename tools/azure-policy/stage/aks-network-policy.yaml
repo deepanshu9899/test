@@ -1,0 +1,65 @@
+# Network policy which denies all incoming and outgoing connections in cluster
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hyex-linux-workers-deny-ingress
+  namespace: linux-container-workers
+spec:
+  podSelector:
+    matchLabels:
+      purpose: hyex-linux-workers
+  policyTypes:
+    - Ingress
+
+---
+# Network policy which denies all incoming and outgoing connections in cluster
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hyex-linux-workers-deny-egress
+  namespace: linux-container-workers
+spec:
+  podSelector:
+    matchLabels:
+      purpose: hyex-linux-workers
+  policyTypes:
+    - Egress
+
+---
+# Network policy which allows Steward to ingress in workers and egress to internet
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hyex-linux-workers-steward-ingress
+  namespace: linux-container-workers
+spec:
+  podSelector:
+    matchLabels:
+      purpose: hyex-linux-workers
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: steward
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: hyperexecute
+      ports:
+        - protocol: TCP
+          port: 80
+          endPort: 9877
+
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              name: steward
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: hyperexecute
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0

@@ -1,0 +1,20 @@
+---
+- name: Generate Download Binaries for scripts
+  ansible.builtin.template:
+    src: roles/basic_scripts/templates/download_binaries.sh
+    dest: /Users/ltuser/scripts/download_binaries.sh
+
+- name: Generate Download Binaries for backup
+  ansible.builtin.template:
+    src: roles/basic_scripts/templates/download_binaries.sh
+    dest: /Users/ltuser/hyperexecute_mac_content/scripts/download_binaries.sh
+
+- name: Generate foreman.sh for scripts
+  ansible.builtin.template:
+    src: roles/basic_scripts/templates/foreman.sh
+    dest: /Users/ltuser/scripts/foreman.sh
+
+- name: Generate foreman.sh for backup
+  ansible.builtin.template:
+    src: roles/basic_scripts/templates/foreman.sh
+    dest: /Users/ltuser/hyperexecute_mac_content/scripts/foreman.sh

@@ -1,0 +1,8 @@
+---
+- name: Download python pkg {{ item }}
+  azure.azcollection.azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/python/{{ item }}
+    dest: "{{ backup_scripts_path }}/python/{{ item }}"

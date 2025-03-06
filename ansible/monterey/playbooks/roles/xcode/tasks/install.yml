@@ -1,0 +1,4 @@
+---
+- name: Install xcode
+  ansible.builtin.import_role:
+    name: xcode_install_role

@@ -1,0 +1,26 @@
+---
+- name: Make files executable
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: u+x
+  loop:
+    - /Users/ltuser/scripts/controller.sh
+    - /Users/ltuser/scripts/download_binaries.sh
+    - /Users/ltuser/scripts/permissions.sh
+    - /Users/ltuser/scripts/cleanup.sh
+    - /Users/ltuser/scripts/change_pgid
+    - /Users/ltuser/scripts/foreman.sh
+    - /Users/ltuser/scripts/python/setup-pkg.sh
+    - /Users/ltuser/scripts/python/setup-raw.sh
+    - /Users/ltuser/scripts/python/install_certificates_3.5_and_below.command
+
+- name: Own things for "{{ ansible_user }}"
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ ansible_user }}"
+    group: staff
+  loop:
+    - /Users # required for runners
+    - /Users/ltuser

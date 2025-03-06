@@ -1,0 +1,95 @@
+name: Notify Unused Azure Resources for Production Environment
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string     
+  workflow_dispatch:
+  schedule:
+    - cron: "00 15 * * *"
+
+jobs:
+  build-workflow-dispatch:
+    if: ${{ !inputs.branch || inputs.branch == '' }}
+    runs-on: ubuntu
+    environment: ${{ github.ref_name }}-withoutapproval
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_RO }}
+      SLACK_AZURE_COST_WEBHOOK_URL: ${{ secrets.SLACK_AZURE_COST_WEBHOOK_URL }}
+      SLACK_USER_GROUP_ID: ${{ secrets.SLACK_USER_GROUP_ID }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies 
+      run: |
+        pip3 install argparse slack_sdk azure-identity azure-mgmt-network azure-mgmt-compute azure-mgmt-subscription azure-monitor-query azure-mgmt-resource mysql-connector-python requests pyyaml
+    - name: Run the Unused Azure Resource notify script
+      run: |
+          python3 tools/azure/unused_ip_addresses.py
+          sleep 20s
+          python3 tools/azure/unattached_snapshots.py
+          sleep 20s
+          python3 tools/azure/unattached_storage_disks.py
+          sleep 20s
+          python3 tools/azure/unused_vm.py
+  build-workflow-call:
+    if: ${{ inputs.branch && inputs.branch != '' }}
+    runs-on: ubuntu
+    environment: ${{ inputs.branch }}-withoutapproval
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_RO }}
+      SLACK_AZURE_COST_WEBHOOK_URL: ${{ secrets.SLACK_AZURE_COST_WEBHOOK_URL }}
+      SLACK_USER_GROUP_ID: ${{ secrets.SLACK_USER_GROUP_ID }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_RO }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies 
+      run: |
+        pip3 install slack_sdk azure-identity azure-mgmt-network azure-mgmt-compute azure-mgmt-subscription azure-monitor-query azure-mgmt-resource mysql-connector-python requests pyyaml
+    
+    - name: Run Unused IP Address Python script
+      run: | 
+        python3 tools/azure/unused_ip_addresses.py --branch ${{ inputs.branch }}
+        sleep 20s
+
+    - name: Run Unattached Snapshots Python script
+      run: |
+        python3 tools/azure/unattached_snapshots.py --branch ${{ inputs.branch }}
+        sleep 20s
+
+    - name: Run Unattached Storage Disks Python script
+      run: |
+        python3 tools/azure/unattached_storage_disks.py --branch ${{ inputs.branch }}
+        sleep 20s
+
+    - name: Run Unused VM Python Script
+      run: |
+        python3 tools/azure/unused_vm.py --branch ${{ inputs.branch }}
+        sleep 20s

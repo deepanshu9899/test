@@ -1,0 +1,104 @@
+{
+  "properties": {
+    "displayName": "Tags-Mandate-v2",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Mandates Tags on specific resource types",
+    "metadata": {
+      "createdBy": "779ae3e9-b154-4106-bbd2-1aad3dfe33a0",
+      "createdOn": "2023-10-11T09:27:01.8351714Z",
+      "updatedBy": null,
+      "updatedOn": null
+    },
+    "version": "1.0.0",
+    "parameters": {
+      "tagName1": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Environment",
+          "description": "Environment of resource"
+        }
+      },
+      "tagName2": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Creator",
+          "description": "Resource creator"
+        }
+      },
+      "tagName3": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Product",
+          "description": "Product value"
+        }
+      },
+      "tagName4": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Jira",
+          "description": "Jira ticket"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "in": [
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.Compute/virtualMachineScaleSets",
+              "Microsoft.Compute/disks",
+              "Microsoft.Network/networkSecurityGroups",
+              "Microsoft.Network/natGateways",
+              "Microsoft.ContainerService/ManagedClusters",
+              "Microsoft.Network/publicIPAddresses",
+              "Microsoft.Storage/storageAccounts",
+              "Microsoft.Compute/galleries",
+              "Microsoft.ContainerRegistry/registries",
+              "Microsoft.DBforMySQL/flexibleServers"
+            ]
+          },
+          {
+            "anyOf": [
+              {
+                "field": "[concat('tags[', parameters('tagName1'),  ']')]",
+                "exists": "false"
+              },
+              {
+                "field": "[concat('tags[', parameters('tagName2'),  ']')]",
+                "exists": "false"
+              },
+              {
+                "field": "[concat('tags[', parameters('tagName3'),  ']')]",
+                "exists": "false"
+              },
+              {
+                "field": "[concat('tags[', parameters('tagName4'),  ']')]",
+                "exists": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    },
+    "versions": [
+      "1.0.0"
+    ]
+  },
+  "id": "/subscriptions/e4e753ea-67e1-40b6-af99-875a23dbc046/providers/Microsoft.Authorization/policyDefinitions/64ef4b88-706a-4d99-b77c-73e01ace77d4",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "64ef4b88-706a-4d99-b77c-73e01ace77d4",
+  "systemData": {
+    "createdBy": "amanurrahman@lambdatest.com",
+    "createdByType": "User",
+    "createdAt": "2023-10-11T09:27:01.7755969Z",
+    "lastModifiedBy": "amanurrahman@lambdatest.com",
+    "lastModifiedByType": "User",
+    "lastModifiedAt": "2023-10-11T09:27:01.7755969Z"
+  }
+}

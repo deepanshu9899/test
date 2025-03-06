@@ -1,0 +1,8 @@
+---
+- name: Download xcode xip
+  azure.azcollection.azure_rm_storageblob:
+    resource_group: "{{ resource_grpup }}"
+    storage_account_name: "{{ storage_account_name }}"
+    container: hyperexecute-devops
+    blob: darwin/xcode/Xcode_14.xip
+    dest: "{{ xcode_xip_location_local }}"

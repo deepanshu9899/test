@@ -1,0 +1,14 @@
+---
+- name: Setting up mac machine
+  hosts: all
+  gather_facts: false
+  vars:
+    project: hyperexecute
+    macos_version: monterey
+    cpu_brand: cpu_brand
+    os_distribution: "{{ ansible_distribution }}"
+    storage_account_name: "{{ 'hypertestproduction' if hostvars[inventory_hostname].ENV == 'prod' else 'hyperexecutestage' }}"
+    resource_grpup: "{{ 'Hypertest-Production' if hostvars[inventory_hostname].ENV == 'prod' else 'hyperexecute-main' }}"
+    arm_init_timeout: 1500
+  roles:
+    - role: basic_scripts

@@ -1,0 +1,76 @@
+name: Sync Katalon Studio Releases to S3
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *" # Runs every hour
+
+jobs:
+  sync_release:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu
+    steps:
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: us-east-1
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Get all releases from Katalon Studio
+        id: get_releases
+        run: |
+          RELEASES=$(curl -s "https://api.github.com/repos/katalon-studio/katalon-studio/releases")
+          LATEST_RELEASE=$(echo "$RELEASES" | jq '[.[] | select(.tag_name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))][0]')
+
+          # Ensure a release was found
+          if [ -z "$LATEST_RELEASE" ] || [ "$LATEST_RELEASE" == "null" ]; then
+            echo "No matching release found."
+          exit 1
+          fi
+
+          TAG_NAME=$(echo "$LATEST_RELEASE" | jq -r '.tag_name | ltrimstr("v")')
+          assets=$(echo $LATEST_RELEASE | jq -r .assets[0].name)
+          ASSET_URL=$(echo "$LATEST_RELEASE" | jq -r --arg VERSION "$TAG_NAME" '.assets[] | select(.name == ("Katalon_Studio_Engine_Windows_64-" + $VERSION + ".zip")).browser_download_url')
+          ASSET_NAME=$(echo "$LATEST_RELEASE" | jq -r --arg VERSION "$TAG_NAME" '.assets[] | select(.name == ("Katalon_Studio_Engine_Windows_64-" + $VERSION + ".zip")).name')
+          echo "::set-output name=asset_url::${ASSET_URL}"
+          echo "::set-output name=asset_name::${ASSET_NAME}"          
+          echo "::set-output name=tag_name::$(echo $LATEST_RELEASE | jq -r .tag_name)"
+          echo "Asset Name: $ASSET_NAME"
+          echo "Asset URL: $ASSET_URL"
+          echo "Tag Name: $TAG_NAME"
+
+      - name: Check if asset exists in S3
+        id: check_s3
+        run: |
+          if aws s3 ls "s3://prod-common-downloads-v1/hyperexecute/hyperexecute-runtime-setup/katalon/windows/${{ steps.get_releases.outputs.asset_name }}"; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+
+      - name: Check if asset exists in az storage account
+        id: check_az_storage
+        run: |
+          exists=$(az storage blob exists --account-name hypertestproduction --container hyperexecute --name hyperexecute-runtime-setup/k6/windows/${{ steps.get_releases.outputs.asset_name }} -o tsv)
+          if $exists; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+
+      - name: Upload asset to S3 and azure storage if not exists
+        if: steps.check_s3.outputs.exists == 'false'
+        run: |
+          curl -L ${{ steps.get_releases.outputs.asset_url }} -o ${{ steps.get_releases.outputs.asset_name }}
+          aws s3 cp ${{ steps.get_releases.outputs.asset_name }} s3://prod-common-downloads-v1/hyperexecute/hyperexecute-runtime-setup/katalon/windows/${{ steps.get_releases.outputs.asset_name }}
+          az storage blob upload --account-name hypertestproduction --container hyperexecute --name hyperexecute-runtime-setup/k6/windows/${{ steps.get_releases.outputs.asset_name }} --file ${{ steps.get_releases.outputs.asset_name }}

@@ -1,0 +1,219 @@
+applicationSet:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  nodeSelector:
+    pool: userpool
+  replicas: 1
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility
+configs:
+  secret:
+    extra:
+      oidc.azure.clientSecret: <CLIENT SECRET>
+controller:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+  replicas: 1
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  serviceAccount:
+    automountServiceAccountToken: true
+    create: true
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility
+crds:
+  install: true
+  keep: false
+dex:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  enabled: true
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility
+externalRedis:
+  host: argocd-redis-ha
+redis-ha:
+  affinity: |
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  enabled: true
+  exporter:
+    enabled: false
+  haproxy:
+    enabled: false
+    metrics:
+      enabled: false
+  nodeSelector:
+    pool: userpool
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility
+repoServer:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  autoscaling:
+    enabled: true
+    maxReplicas: 2
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  clusterAdminAccess:
+    enabled: true
+  nodeSelector:
+    pool: userpool
+  resources:
+    limits:
+      cpu: "1"
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility
+server:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: pool
+            operator: In
+            values:
+            - userpool
+  autoscaling:
+    behavior: {}
+    enabled: true
+    maxReplicas: 2
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  config:
+    dex.config: |
+      connectors:
+      - type: microsoft
+        id: microsoft
+        name: LT
+        config:
+          clientID: c491975d-c6ca-495d-b456-22f000ed867b
+
+          clientSecret: $oidc.azure.clientSecret
+          redirectURI: https://argocd-stage-hyperexecute.lambdatestinternal.com/api/dex/callback
+          tenant: 1729f899-18eb-4d3c-ac9f-73e14fb84c0c
+          groups:
+            - hyperexecute-admin
+            - hyperexecute-dev
+    url: https://argocd-stage-hyperexecute.lambdatestinternal.com
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    enabled: true
+    hosts:
+    - argocd-stage-hyperexecute.lambdatestinternal.com
+    https: true
+    ingressClassName: nginx
+    tls:
+    - hosts:
+      - argocd-stage-hyperexecute.lambdatestinternal.com
+      secretName: argocd-tls-certificate
+  metrics:
+    enabled: false
+  nodeSelector:
+    pool: userpool
+  rbacConfig:
+    policy.csv: |
+      g, "hyperexecute-dev", role:readonly
+      g, "hyperexecute-admin", role:admin
+    policy.default: role:''
+    scopes: '[groups, email]'
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 125m
+      memory: 128Mi
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: workload
+  #   operator: Equal
+  #   value: utility

@@ -1,0 +1,12 @@
+---
+- name: Download lambda public certificates
+  include: download_lambda_cert.yml
+
+- name: Download env
+  include: download_env.yml
+
+- name: Download self signed certifcates
+  include: download_self_signed_cert.yml
+
+- name: Download python pkg files
+  include: download_python.yml

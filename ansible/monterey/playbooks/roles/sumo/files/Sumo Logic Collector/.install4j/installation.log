@@ -1,0 +1,1377 @@
+[INFO] Logger started at 2022-10-13 18:05:13
+[INFO] Executable name: /Volumes/SumoCollector/Sumo Logic Collector Installer.app
+[INFO] install4j version: 9.0.6 (build 9147)
+[INFO] Properties: 
+-- listing properties --
+java.runtime.name=OpenJDK Runtime Environment
+exe4j.moduleName=/Volumes/SumoCollector/Sumo Logic Col...
+sun.boot.library.path=/private/var/folders/zz/zyxvpxvq6csfx...
+java.vm.version=25.342-b07
+i4j.jreBundle=/var/folders/zz/zyxvpxvq6csfxvn_n0000...
+gopherProxySet=false
+java.vm.vendor=Amazon.com Inc.
+java.vendor.url=https://aws.amazon.com/corretto/
+path.separator=:
+java.vm.name=OpenJDK 64-Bit Server VM
+file.encoding.pkg=sun.io
+user.country=US
+sun.java.launcher=SUN_STANDARD
+sun.os.patch.level=unknown
+install4j.exeDir=/Volumes/SumoCollector/
+java.vm.specification.name=Java Virtual Machine Specification
+user.dir=/Volumes/SumoCollector/Sumo Logic Col...
+java.runtime.version=1.8.0_342-b07
+java.awt.graphicsenv=sun.awt.CGraphicsEnvironment
+i4j.ownBundlePath=/Volumes/SumoCollector/Sumo Logic Col...
+java.endorsed.dirs=/private/var/folders/zz/zyxvpxvq6csfx...
+os.arch=x86_64
+java.io.tmpdir=/var/folders/zz/zyxvpxvq6csfxvn_n0000...
+line.separator=
+
+java.vm.specification.vendor=Oracle Corporation
+os.name=Mac OS X
+jdk.http.auth.tunneling.disabledSchemes=
+sun.jnu.encoding=UTF-8
+java.library.path=/var/root/Library/Java/Extensions:/Li...
+org.apache.logging.log4j.simplelog.StatusLogger.level=OFF
+jdk.lang.Process.allowAmbiguousCommands=false
+java.specification.name=Java Platform API Specification
+java.class.version=52.0
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+os.version=10.15.4
+http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+user.home=/var/root
+user.timezone=GMT
+java.awt.printerjob=sun.lwawt.macosx.CPrinterJob
+java.specification.version=1.8
+file.encoding=UTF-8
+user.name=root
+java.class.path=/Volumes/SumoCollector/Sumo Logic Col...
+java.vm.specification.version=1.8
+sun.arch.data.model=64
+java.home=/private/var/folders/zz/zyxvpxvq6csfx...
+sun.java.command=com.install4j.runtime.launcher.MacLau...
+java.specification.vendor=Oracle Corporation
+user.language=en
+awt.toolkit=sun.lwawt.macosx.LWCToolkit
+java.vm.info=mixed mode
+java.version=1.8.0_342
+java.ext.dirs=/var/root/Library/Java/Extensions:/pr...
+sun.boot.class.path=/private/var/folders/zz/zyxvpxvq6csfx...
+java.vendor=Amazon.com Inc.
+java.awt.headless=true
+i4j.tarFile=/Volumes/SumoCollector/Sumo Logic Col...
+install4j.appDir=/Volumes/SumoCollector/Sumo Logic Col...
+file.separator=/
+java.vendor.url.bug=https://github.com/corretto/corretto-...
+sun.cpu.endian=little
+sun.io.unicode.encoding=UnicodeBig
+socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16
+ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+sun.cpu.isalist=
+[INFO] com.install4j.runtime.installer.platform.macos.VolumeInfo: image: /Users/ltuser/monitoring/sumologic/SumoCollector.dmg, mountPoint: /Volumes/SumoCollector
+[INFO] Variable changed: sys.resolveUserSpecificInstallationDir=false[class java.lang.String]
+[INFO] com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction [ID 1001]: Execute action
+       Property linuxPrivilegeRequirement: Require root
+       Property allRequested: true
+       Property failIfNotObtainedLinux: false
+       Property failIfNotObtainedMac: true
+       Property failIfNotObtainedWin: true
+       Property failIfNotRootUnix: true
+       Property obtainIfAdminMac: true
+       Property obtainIfAdminWin: true
+       Property obtainIfNormalMac: true
+       Property obtainIfNormalWin: true
+       Property rollbackSupported: false
+       Property updateInstallationDirectory: true
+       Execute action successful after 2 ms
+[INFO] com.install4j.runtime.beans.screens.StartupScreen [ID 1]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.WelcomeScreen [ID 2]: Show screen
+[INFO] com.install4j.runtime.beans.screens.WelcomeScreen [ID 2]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.LicenseScreen [ID 3]: Show screen
+[INFO] com.install4j.runtime.beans.screens.LicenseScreen [ID 3]: command: move 1 screens, executing actions, checking condition
+       Variable changed: sys.programGroupDisabled=true[class java.lang.Boolean]
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 7]: Show screen
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 14798]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_6
+       Property rollbackSupported: false
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 15091]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_7
+       Property rollbackSupported: false
+       Execute action successful after 805 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 8001]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_8
+       Property variableName: collector.isUpgrade
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: collector.isUpgrade=false[class java.lang.Boolean]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 8002]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_9
+       Property variableName: collector.secureFiles
+       Property failIfNull: false
+       Property onlyIfUndefined: true
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: collector.secureFiles=true[class java.lang.Boolean]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 16835]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_10
+       Property variableName: collector.jreLocation
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: collector.jreLocation=/Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 8011]: Execute action
+       Property arguments: [logging of arguments is disabled]
+       Property environmentVariables: {}
+       Property executable: collector
+       Property returnCodeVariable: 
+       Property rollbackArguments: null
+       Property rollbackExecutable: null
+       Property rollbackWorkingDirectory: null
+       Property stderrFile: null
+       Property stderrRedirectionMode: To log file
+       Property stderrVariableName: 
+       Property stdinFile: null
+       Property stdinRedirectionMode: No redirection
+       Property stdinString: 
+       Property stdoutFile: null
+       Property stdoutRedirectionMode: To log file
+       Property stdoutVariableName: 
+       Property timeout: 60
+       Property workingDirectory: .
+       Property failOnStderrFileError: false
+       Property failOnStdinFileError: false
+       Property failOnStdoutFileError: false
+       Property includeParentEnvironmentVariables: true
+       Property keepConsoleWindow: false
+       Property logArguments: false
+       Property rollbackSupported: false
+       Property showWindowsConsole: false
+       Property updateStderrVariableLines: false
+       Property updateStdoutVariableLines: false
+       Property useRollbackExecutable: false
+       Property wait: true
+       Property waitForStreams: true
+       used working dir: /Applications/Sumo Logic Collector/.
+[INFO] com.install4j.runtime.installer.helper.launching.LaunchHelper: stderr output was empty
+       
+stdout output:
+---BEGIN---
+Stopping SumoLogic Collector...
+SumoLogic Collector is not running.
+---END---
+       return value is 1
+[ERROR] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 8011]: return value is 1
+        Execute action not successful after 511 ms
+[INFO] com.install4j.runtime.beans.actions.UninstallPreviousAction [ID 8200]: Execute action
+       Property installationDirectory: null
+       Property installerVariables: {}
+       Property logFiles: []
+       Property onlyIfSameApplicationId: true
+       Property rollbackSupported: false
+       Property uninstallServices: true
+       checking running processes
+       checking running processes ok
+       previous installation id at /Applications/Sumo Logic Collector: 7857-4527-9352-4688
+       starting uninstaller
+       executing /Applications/Sumo Logic Collector/.install4j/uninstall
+       see uninstallPrevious.log for the log file of the uninstaller
+       Variable changed: sys.undeletedUninstallFiles=null
+       finished
+       Execute action successful after 6559 ms
+[INFO] com.install4j.runtime.beans.actions.InstallFilesAction [ID 9]: Execute action
+       Property directoryResolverScript: null
+       Property fileFilterScript: null
+       Property sizeCalculatorScript: null
+       Property acceptAllCertificates: false
+       Property checkFreeSpace: true
+       Property delay: false
+       Property installRuntime: true
+       Property rollbackSupported: true
+       Property saveDownloadedFiles: false
+       Property showFileNames: true
+       Property triggerReboot: true
+       Property validateApplicationId: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/_CodeSignature/CodeResources; size: 17199 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/LICENSE; size: 19274 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/unpack200; size: 155280 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/rmid; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/rmiregistry; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/java; size: 131840 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/servertool; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/orbd; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/keytool; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/policytool; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/pack200; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/jjs; size: 131968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin/tnameserv; size: 131984 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/ASSEMBLY_EXCEPTION; size: 1522 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/THIRD_PARTY_README; size: 157063 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libnet.dylib; size: 153456 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libnio.dylib; size: 117312 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libinstrument.dylib; size: 169088 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjavafx_iio.dylib; size: 336112 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libzip.dylib; size: 86656 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm/sRGB.pf; size: 6876 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm/CIEXYZ.pf; size: 784 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm/PYCC.pf; size: 234080 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm/GRAY.pf; size: 556 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm/LINEAR_RGB.pf; size: 488 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/psfontj2d.properties; size: 11390 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/fontconfig.properties.src; size: 9084 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/logging.properties; size: 2455 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/sound.properties; size: 1210 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjava_crw_demo.dylib; size: 73984 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/currency.data; size: 4114 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libsplashscreen.dylib; size: 414816 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libdt_socket.dylib; size: 63248 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libj2pkcs11.dylib; size: 139008 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/calendars.properties; size: 2479 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jvm.cfg; size: 1621 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/hijrah-config-umalqura.properties; size: 14959 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jli/libjli.dylib; size: 111568 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/blacklisted.certs; size: 2488 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/java.security; size: 55236 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/java.policy; size: 2567 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/cacerts; size: 242062 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/unlimited/local_policy.jar; size: 637 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/unlimited/US_export_policy.jar; size: 619 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/limited/local_policy.jar; size: 1039 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/limited/US_export_policy.jar; size: 619 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jfr/default.jfc; size: 29075 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jfr/profile.jfc; size: 29033 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/cursors.properties; size: 1274 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_LinkDrop32x32.gif; size: 162 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_CopyDrop32x32.gif; size: 158 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_LinkNoDrop32x32.gif; size: 153 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/invalid32x32.gif; size: 153 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_MoveNoDrop32x32.gif; size: 153 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_CopyNoDrop32x32.gif; size: 153 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors/motif_MoveDrop32x32.gif; size: 141 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libhprof.dylib; size: 228112 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libosxkrb5.dylib; size: 57888 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/net.properties; size: 5352 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/rt.jar; size: 65884738 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:10 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/javafx.properties; size: 56 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libosxui.dylib; size: 94144 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/tzdb.dat; size: 106941 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/sunec.jar; size: 38049 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:12 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/nashorn.jar; size: 1993111 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:11 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/cldrdata.jar; size: 3837862 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/jfxrt.jar; size: 8826655 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:12 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/dnsns.jar; size: 8203 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/localedata.jar; size: 1178758 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:11 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/sunjce_provider.jar; size: 272335 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:10 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/meta-index; size: 617 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/sunpkcs11.jar; size: 274863 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:12 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/jaccess.jar; size: 43838 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext/zipfs.jar; size: 70469 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:10 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjdwp.dylib; size: 313088 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management/jmxremote.access; size: 3998 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management/snmp.acl.template; size: 3376 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management/management.properties; size: 14630 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management/jmxremote.password.template; size: 2856 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libsunec.dylib; size: 210752 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libawt_lwawt.dylib; size: 905040 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jfr.jar; size: 885982 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:09 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/server/libjvm.dylib; size: 14430624 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/server/Xusage.txt; size: 1423 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/server/libjsig.dylib; size: 56928 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jsse.jar; size: 1915589 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:09 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libglass.dylib; size: 397392 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jfxswt.jar; size: 33459 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:10 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libfreetype.dylib.6; size: 913376 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libmlib_image.dylib; size: 810992 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjavafx_font.dylib; size: 85440 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libmanagement.dylib; size: 84576 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjaas_unix.dylib; size: 54960 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjsound.dylib; size: 132784 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/charsets.jar; size: 3133648 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:10 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/resources.jar; size: 3530745 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:09 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libnpt.dylib; size: 57456 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libj2pcsc.dylib; size: 59776 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjsig.dylib; size: 56928 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jvm.hprof.txt; size: 4226 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjawt.dylib; size: 54624 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libattach.dylib; size: 57840 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libprism_common.dylib; size: 92304 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/content-types.properties; size: 5916 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libprism_es2.dylib; size: 83088 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libfontmanager.dylib; size: 531872 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/fontconfig.bfc; size: 3058 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jspawnhelper; size: 57872 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/meta-index; size: 2028 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management-agent.jar; size: 368 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjpeg.dylib; size: 227664 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jce.jar; size: 94937 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:09 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/flavormap.properties; size: 4211 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:08 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libdecora_sse.dylib; size: 108688 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjsdt.dylib; size: 56336 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/liblcms.dylib; size: 428944 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libAppleScriptEngine.dylib; size: 102768 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libverify.dylib; size: 78816 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/psfont.properties.ja; size: 3793 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libj2gss.dylib; size: 87856 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libsaproc.dylib; size: 105408 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/classlist; size: 72450 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libjava.dylib; size: 300944 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libawt.dylib; size: 645872 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libunpack.dylib; size: 139216 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libosx.dylib; size: 102560 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libprism_sw.dylib; size: 109392 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/libosxapp.dylib; size: 178688 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/MacOS/libjli.dylib; size: 111568 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Info.plist; size: 770 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/uninstall; size: 16607 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 755, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/collector; size: 283 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/jvm.options; size: 716 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/.sigar_shellrc; size: 1746 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/SumoJNI-64.dll; size: 3043840 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/SumoJNI.dll; size: 2200576 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/jacob-1.18-x64.dll; size: 205312 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/jacob-1.18-x86.dll; size: 167936 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-aarch64-linux.so; size: 303440 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-freebsd-6.so; size: 210641 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-linux.so; size: 246605 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-solaris.so; size: 251360 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ia64-hpux-11.sl; size: 577452 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ia64-linux.so; size: 494929 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-pa-hpux-11.sl; size: 516096 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc-aix-5.so; size: 400925 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc-linux.so; size: 258547 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc64-aix-5.so; size: 425077 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc64-linux.so; size: 330767 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-s390x-linux.so; size: 269932 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-sparc-solaris.so; size: 285004 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-sparc64-solaris.so; size: 261896 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-universal-macosx.dylib; size: 424272 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-universal64-macosx.dylib; size: 439936 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-freebsd-5.so; size: 179751 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-freebsd-6.so; size: 179379 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-linux.so; size: 233385 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-solaris.so; size: 242880 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-aix-ppc-32.so; size: 98283 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-aix-ppc-64.so; size: 112380 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-arm-64.so; size: 110976 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-x86-32.so; size: 96760 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-x86-64.so; size: 108080 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-ia-32.so; size: 205112 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-ia-64.so; size: 206072 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-parisc-32.sl; size: 155648 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-parisc-64.sl; size: 147808 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-390-32.so; size: 92444 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-390-64.so; size: 110480 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-arm-64.so; size: 134296 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-armel-32.so; size: 82176 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-armhf-32.so; size: 67896 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-ppcle-64.so; size: 134264 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-x86-32.so; size: 80784 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-x86-64.so; size: 102856 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-macosx-arm-64.dylib; size: 139600 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-macosx-universal-32.jnilib; size: 229088 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-macosx-universal-64.jnilib; size: 239632 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-sparc-32.so; size: 86524 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-sparc-64.so; size: 101112 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-x86-32.so; size: 102308 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-x86-64.so; size: 118120 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-amd64-winnt.dll; size: 382464 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-x86-winnt.dll; size: 266240 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-x86-winnt.lib; size: 99584 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar.jar; size: 189135 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper-windows-x86-32.dll; size: 326208 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper-windows-x86-64.dll; size: 370240 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper.jar; size: 146213 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapperdemo.jar; size: 81103 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrappertest.jar; size: 163099 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/ant-1.10.9.jar; size: 2235475 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/ant-launcher-1.10.9.jar; size: 18709 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/aopalliance-repackaged-2.6.1.jar; size: 27496 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/archaius-core-0.7.6.SUMO-6.jar; size: 138656 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/archaius-scala_2.12-0.7.6.SUMO-6.jar; size: 101055 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/avro-1.11.1.jar; size: 601891 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/avro-fastserde-0.2.106.jar; size: 166240 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/avro-ipc-1.11.1.jar; size: 183710 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/avrox-19.409-3.jar; size: 170563 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/aws-java-sdk-core-1.12.269.jar; size: 1046386 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/aws-java-sdk-kms-1.12.269.jar; size: 657846 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/aws-java-sdk-s3-1.12.269.jar; size: 1257196 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/c3p0-0.9.5.5.jar; size: 497803 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/checker-qual-3.12.0.jar; size: 206748 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/classgraph-4.8.90.jar; size: 503248 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/codemodel-2.6.jar; size: 153160 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/collector-19.409-3-resources.jar; size: 496 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/collector-19.409-3.jar; size: 2503666 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/collector-base-19.409-3.jar; size: 945086 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/collector-interchange-19.409-3.jar; size: 2027588 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/collector-util-19.409-3.jar; size: 900866 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-beanutils-1.9.4.jar; size: 243298 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-cli-1.5.0.jar; size: 58060 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-codec-1.15.jar; size: 356574 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-collections-3.2.2.jar; size: 584878 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-compress-1.21.jar; size: 1011281 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-configuration-1.10.jar; size: 361261 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-configuration2-2.8.0.jar; size: 628983 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-digester-1.8.1.jar; size: 146678 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-io-2.11.0.jar; size: 325187 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-lang-2.6.jar; size: 283580 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-lang3-3.12.0.jar; size: 585449 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-logging-1.2.jar; size: 61690 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-text-1.9.jar; size: 215905 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/commons-validator-1.6.jar; size: 184437 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/compiler-0.9.6.jar; size: 100885 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/docker-java-3.2.1.jar; size: 4043 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/docker-java-api-3.2.1.jar; size: 423060 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/docker-java-core-3.2.1.jar; size: 324960 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/docker-java-transport-jersey-3.2.1.jar; size: 36027 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/docker-java-transport-netty-3.2.1.jar; size: 43075 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/ecc-25519-java-1.0.3.jar; size: 13087 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/eddsa-0.2.0.jar; size: 61532 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/error_prone_annotations-2.11.0.jar; size: 16405 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/everit-json-schema-1.12.1.jar; size: 237555 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/failureaccess-1.0.1.jar; size: 4438 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/guava-31.1-jre.jar; size: 2932975 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/handy-uri-templates-2.1.8.jar; size: 45545 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/helper-all-0.2.106.jar; size: 1885202 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/hk2-api-2.6.1.jar; size: 201079 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/hk2-locator-2.6.1.jar; size: 201477 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/hk2-utils-2.6.1.jar; size: 131674 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/httpclient-4.5.13.jar; size: 770213 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/httpcore-4.4.13.jar; size: 324464 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/ion-java-1.0.2.jar; size: 558335 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/j2objc-annotations-1.3.jar; size: 9007 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-annotations-2.12.7.jar; size: 74231 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-core-2.12.7.jar; size: 358847 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-databind-2.12.7.jar; size: 1487521 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-dataformat-cbor-2.12.7.jar; size: 60148 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-jaxrs-base-2.12.7.jar; size: 34841 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-jaxrs-json-provider-2.12.7.jar; size: 15875 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jackson-module-jaxb-annotations-2.12.7.jar; size: 35491 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jacob-1.18.jar; size: 48835 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jakarta.activation-api-1.2.1.jar; size: 44644 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jakarta.annotation-api-1.3.5.jar; size: 25031 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jakarta.inject-2.6.1.jar; size: 18323 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jakarta.ws.rs-api-2.1.6.jar; size: 139477 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jakarta.xml.bind-api-2.3.2.jar; size: 114755 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jasypt-1.9.3.jar; size: 142744 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/javassist-3.25.0-GA.jar; size: 769095 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/javax.annotation-api-1.3.2.jar; size: 26896 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/javax.servlet-api-3.1.0.jar; size: 96813 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jaxb-api-2.3.0.jar; size: 126771 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jbcrypt-1.0.0.jar; size: 17013 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jcifs-1.3.17.jar; size: 395090 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jcl-over-slf4j-1.7.30.jar; size: 16604 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jersey-apache-connector-2.30.1.jar; size: 43266 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jersey-client-2.30.1.jar; size: 241367 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jersey-common-2.30.1.jar; size: 1153792 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jersey-hk2-2.30.1.jar; size: 75921 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jinterop-2.0.8.2.jar; size: 393468 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jinterop-deps-2.0.8.2.jar; size: 120227 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jmespath-java-1.12.269.jar; size: 28000 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jna-5.11.0.jar; size: 1822504 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jna-platform-5.11.0.jar; size: 1360377 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/joda-convert-2.2.2.jar; size: 144453 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/joda-time-2.11.0.jar; size: 638317 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json-20190722.jar; size: 63931 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-ast_2.12-4.0.5.jar; size: 517692 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-core_2.12-4.0.5.jar; size: 317317 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-ext_2.12-4.0.5.jar; size: 190275 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-jackson-core_2.12-4.0.5.jar; size: 24963 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-jackson_2.12-4.0.5.jar; size: 13400 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-native-core_2.12-4.0.5.jar; size: 83127 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-native_2.12-4.0.5.jar; size: 10036 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/json4s-scalap_2.12-4.0.5.jar; size: 348268 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jsr305-3.0.2.jar; size: 20519 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/junixsocket-common-2.3.2.jar; size: 89076 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/junixsocket-native-common-2.3.2.jar; size: 354522 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/jzlib-1.1.3.jar; size: 71768 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-api-2.17.1.jar; size: 298576 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-core-2.17.1.jar; size: 1767420 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-jcl-2.17.1.jar; size: 12854 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-jul-2.17.1.jar; size: 30733 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-slf4j18-impl-2.17.1.jar; size: 21136 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/log4j-web-2.17.1.jar; size: 35591 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/mchange-commons-java-0.2.15.jar; size: 615716 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/metrics-core-4.2.10.jar; size: 124763 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/metrics-healthchecks-4.2.9.jar; size: 22455 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/metrics-jmx-4.2.10.jar; size: 20892 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/metrics4-scala_2.12-4.2.9.jar; size: 73823 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/mina-statemachine-2.1.5.jar; size: 61921 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-buffer-4.1.77.Final.jar; size: 299075 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-codec-4.1.77.Final.jar; size: 333002 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-codec-http-4.1.77.Final.jar; size: 630352 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-codec-socks-4.1.77.Final.jar; size: 118054 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-common-4.1.77.Final.jar; size: 645436 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-handler-4.1.77.Final.jar; size: 520848 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-handler-proxy-4.1.77.Final.jar; size: 23635 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-resolver-4.1.77.Final.jar; size: 37478 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-4.1.77.Final.jar; size: 475246 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-classes-epoll-4.1.77.Final.jar; size: 137455 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-classes-kqueue-4.1.77.Final.jar; size: 106556 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-native-epoll-4.1.77.Final.jar; size: 5609 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-native-kqueue-4.1.77.Final-osx-x86_64.jar; size: 25772 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-native-kqueue-4.1.77.Final.jar; size: 5525 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/netty-transport-native-unix-common-4.1.77.Final.jar; size: 42806 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/osgi-resource-locator-1.0.3.jar; size: 19552 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/oslib-1.0-sumo-4.jar; size: 104815 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/paranamer-2.8.jar; size: 34326 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/quartz-2.3.2.jar; size: 688413 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/re2j-1.4.jar; size: 109048 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/reflections-0.9.12.jar; size: 104666 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/scala-arm_2.12-2.1.jar; size: 91302 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/scala-collection-compat_2.12-2.8.0.jar; size: 270699 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/scala-library-2.12.16.jar; size: 5432985 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/scala-reflect-2.12.16.jar; size: 3661374 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/scala-xml_2.12-2.1.0.jar; size: 466347 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/sigar-1.6.4.5.jar; size: 342521 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/simplesocks-1.0.1.jar; size: 4836 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/slf4j-api-1.8.0-beta2.jar; size: 44068 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/snappy-java-1.1.8.4.jar; size: 1969289 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/sshlib-2.2.9.jar; size: 284811 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/sumologic-http-core-2.0.jar; size: 20147 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/sumologic-log4j2-appender-1.12.jar; size: 9177 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/syslog4j-0.9.44.jar; size: 372637 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/wrapper-3.5.49.1.jar; size: 146213 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/xz-1.9.jar; size: 115080 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/lib/zstd-jni-1.5.2-3.jar; size: 5435296 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/optional-lib/bc-fips-1.0.2.1.jar; size: 3777063 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/optional-lib/bcpkix-jdk15on-1.60.jar; size: 796532 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/19.409-3/optional-lib/bcprov-jdk15on-1.60.jar; size: 4189874 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/InitializeCollector-NT.bat; size: 2024 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/InstallCollector-NT.bat; size: 4610 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/Info.plist; size: 2291 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/MacOS/JavaApplicationStub; size: 98912 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 755, overwriteMode: If newer otherwise ask, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Removing notarization-only signature from /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/MacOS/JavaApplicationStub
+       Install file: /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/PkgInfo; size: 8 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/Resources/app.icns; size: 49486 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/Resources/i4jlauncher.config; size: 2448 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/SumoEtw.man; size: 6433 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/SumoJNI-64.dll; size: 3043840 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/SumoJNI.dll; size: 2200576 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/UninstallCollector-NT.bat; size: 4182 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/certs/bcfkscacerts; size: 106886 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/collector; size: 88103 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/collector.bat; size: 4174 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/config/collector.properties; size: 0 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/config/log4j2.xml; size: 3872 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/config/wrapper-license.conf; size: 481 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/config/wrapper.conf; size: 9498 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/license/JACOB/LICENSE.TXT; size: 26440 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/license/LICENSE.TXT; size: 22042 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/license/SIGAR/LICENSE; size: 10850 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/license/SIGAR/NOTICE; size: 1263 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/license/WRAPPER/LICENSE.txt; size: 830 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/logs/collector.out.log; size: 0 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/events/readme.txt; size: 3978 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/events/sumo-remote-collector-config.ps1; size: 7344 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/readme.txt; size: 3817 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/change-firewall-settings.ps1; size: 1978 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/change-registry-permissions.ps1; size: 5408 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-firewall-settings.ps1; size: 4515 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-registry-permissions.ps1; size: 2802 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-wmi-service.ps1; size: 166 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/evtloginfo.ps1; size: 2956 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/get-sysinfo.ps1; size: 4846 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/hello.ps1; size: 114 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/scripts/start-wmi-service.ps1; size: 103 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/powershell/perfmon/sumo-remote-collector-config.ps1; size: 7396 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/configureFipsMode.sh; size: 2654 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/postInstall.sh; size: 6946 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/postUninstall.sh; size: 254 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/preInstall.sh; size: 3043 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/preUninstall.sh; size: 153 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/safeRestart.cmd; size: 3074 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/safeRestart.sh; size: 766 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/secureFiles.cmd; size: 1701 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/secureFiles.sh; size: 3769 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/unsecureFiles.cmd; size: 676 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/script/unsecureFiles.sh; size: 1911 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/startCollectorService.bat; size: 24 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/startWinmgmtService.bat; size: 47 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/stopCollectorService.bat; size: 23 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/DemoApp.bat; size: 8152 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/GetHostId.bat; size: 2300 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/InstallTestWrapper-NT.bat; size: 8154 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/PauseTestWrapper-NT.bat; size: 5138 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/QueryTestWrapper-NT.bat; size: 5149 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/README.txt; size: 1577 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/ResumeTestWrapper-NT.bat; size: 5138 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/SetupTestWrapper.bat; size: 5116 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/StartTestWrapper-NT.bat; size: 5134 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/StopTestWrapper-NT.bat; size: 5137 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/TeardownTestWrapper.bat; size: 5119 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/TestWrapper.bat; size: 8627 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/TestWrapperCommand.bat; size: 11758 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/UninstallTestWrapper-NT.bat; size: 5142 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/demoapp; size: 114885 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linux32/libwrapper.so; size: 80784 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linux32/wrapper; size: 560036 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linux64/libwrapper.so; size: 102856 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linux64/wrapper; size: 592968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linuxaarch64/libwrapper.so; size: 134296 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/linuxaarch64/wrapper; size: 526984 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/macos/wrapper; size: 1362672 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/solaris32/libwrapper.so; size: 86524 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/solaris32/wrapper; size: 589376 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/testwrapper; size: 115331 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/win64/wrapper-windows-x86-64.dll; size: 370240 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/win64/wrapper.exe; size: 792128 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/windows/wrapper-windows-x86-32.dll; size: 326208 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/windows/wrapper.exe; size: 724544 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-aix-ppc-32; size: 538705 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-aix-ppc-64; size: 691418 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-arm-64; size: 706104 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-x86-32; size: 622132 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-x86-64; size: 688760 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-ia-32; size: 1011720 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-ia-64; size: 1013008 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-parisc-32; size: 872448 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-parisc-64; size: 916728 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-390-32; size: 567016 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-390-64; size: 608936 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-arm-64; size: 526984 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-armel-32; size: 550852 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-armhf-32; size: 452432 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-ppcle-64; size: 658000 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-x86-32; size: 560036 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-linux-x86-64; size: 592968 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-arm-64; size: 623872 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-universal-32; size: 1321200 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-universal-64; size: 1362672 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-sparc-32; size: 589376 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-sparc-64; size: 631792 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-x86-32; size: 706292 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-x86-64; size: 753320 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-windows-x86-32.exe; size: 724544 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/tanuki/wrapper-windows-x86-64.exe; size: 792128 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/inst_jre.cfg; size: 145 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:40 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/pref_jre.cfg; size: 57 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:40 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4jruntime.jar; size: 2115926 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:40 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/MessagesDefault; size: 34821 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4jparams.conf; size: 356676 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/stats.properties; size: 1629 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/uninstallPrevious.log; size: 25088 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/user.jar; size: 3517532 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/launcher64d41994.jar; size: 789 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/user/flatlaf.jar; size: 708777 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/user/flatlaf.jar; size: 708777 bytes; exists: true
+       Install file: /Applications/Sumo Logic Collector/.install4j/install4j; size: 119808 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:40 GMT 2022, mode: 755, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_0_1y3k4o6.utf8; size: 34821 bytes; exists: false
+       File options set to: [fileTime: Thu Oct 13 18:05:40 GMT 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_1_1y3k4o6.utf8; size: 32697 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_2_1y3k4o6.TXT; size: 22042 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_3_1y3k4o6_18gg8kx.png; size: 9202 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_3_1y3k4o6_18gg8kx@2x.png; size: 15419 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_3_1y3k4o6_18gg8kx@2x_dark.png; size: 15837 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_3_1y3k4o6_18gg8kx_dark.png; size: 8891 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_4_1y3k4o6_1il3csj.png; size: 2817 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/i4j_extf_5_1y3k4o6_qzwls4.png; size: 17976 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/libi4jinst.dylib; size: 270336 bytes; exists: false
+       Install file: /Applications/Sumo Logic Collector/.install4j/libi4jinst2.dylib; size: 120688 bytes; exists: false
+       refreshing /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app
+       Backing up /Applications/Sumo Logic Collector/.install4j/response.varfile
+       Execute action successful after 2842 ms
+[INFO] com.install4j.runtime.beans.actions.files.MoveFileAction [ID 874]: Execute action
+       Property destinationFile: ./wrapper
+       Property destinationRoot: Installation directory
+       Property directoryFilter: null
+       Property directoryMode: 755
+       Property fileFilter: null
+       Property files: [tanuki/wrapper-macosx-universal-64]
+       Property filesRoot: Installation directory
+       Property mode: 755
+       Property overwriteMode: Always ask except for update
+       Property uninstallMode: If created
+       Property delay: false
+       Property recursive: true
+       Property rollbackSupported: true
+       Property shared: false
+       Property showFileNames: true
+       Property showProgress: false
+       Property triggerReboot: true
+       Move /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-universal-64 to /Applications/Sumo Logic Collector/./wrapper
+       Install file: /Applications/Sumo Logic Collector/./wrapper; size: 1362672 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 755, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-universal-64
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.files.DeleteFileAction [ID 14329]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: com.install4j.script.I4jScript_Internal_15
+       Property files: [19.409-3/bin/native/lib]
+       Property filesRoot: null
+       Property backupForRollback: true
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-sparc-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/SumoJNI-64.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-aix-ppc-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-x86-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc64-aix-5.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-solaris.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-aarch64-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-universal-macosx.dylib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper-windows-x86-64.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-ia-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-390-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-armhf-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/jacob-1.18-x64.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-parisc-64.sl
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/SumoJNI.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/.sigar_shellrc
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc64-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-pa-hpux-11.sl
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-amd64-winnt.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-sparc-solaris.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-arm-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrappertest.jar
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-x86-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-armel-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-x86-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-ppcle-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-sparc64-solaris.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar.jar
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-freebsd-6.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-macosx-arm-64.dylib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapperdemo.jar
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-x86-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-freebsd-5.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-freebsd-x86-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-x86-solaris.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-x86-winnt.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper-windows-x86-32.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ia64-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/sigar-x86-winnt.lib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-amd64-freebsd-6.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc-aix-5.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ia64-hpux-11.sl
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-parisc-32.sl
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-arm-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-390-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-hpux-ia-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/wrapper.jar
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-linux-x86-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-ppc-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libsigar-s390x-linux.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/jacob-1.18-x86.dll
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-solaris-sparc-32.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-aix-ppc-64.so
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib/libwrapper-macosx-universal-32.jnilib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib
+       Execute action successful after 22 ms
+[INFO] com.install4j.runtime.beans.actions.files.DeleteFileAction [ID 1126]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: null
+       Property files: [tanuki]
+       Property filesRoot: null
+       Property backupForRollback: true
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-390-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-ia-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-parisc-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/macos/wrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/macos
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-x86-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/DemoApp.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/PauseTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-armhf-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/QueryTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/win64/wrapper-windows-x86-64.dll
+       Backing up /Applications/Sumo Logic Collector/tanuki/win64/wrapper.exe
+       Backing up /Applications/Sumo Logic Collector/tanuki/win64
+       Backing up /Applications/Sumo Logic Collector/tanuki/ResumeTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-windows-x86-64.exe
+       Backing up /Applications/Sumo Logic Collector/tanuki/TestWrapper.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-arm-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-x86-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/linuxaarch64/libwrapper.so
+       Backing up /Applications/Sumo Logic Collector/tanuki/linuxaarch64/wrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/linuxaarch64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-ppcle-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-sparc-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-arm-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/TeardownTestWrapper.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-macosx-universal-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-x86-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux32/libwrapper.so
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux32/wrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux32
+       Backing up /Applications/Sumo Logic Collector/tanuki/solaris32/libwrapper.so
+       Backing up /Applications/Sumo Logic Collector/tanuki/solaris32/wrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/solaris32
+       Backing up /Applications/Sumo Logic Collector/tanuki/TestWrapperCommand.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-aix-ppc-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-390-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-ia-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-hpux-parisc-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/demoapp
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-armel-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/StartTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-arm-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/GetHostId.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/testwrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-freebsd-x86-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/README.txt
+       Backing up /Applications/Sumo Logic Collector/tanuki/SetupTestWrapper.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-windows-x86-32.exe
+       Backing up /Applications/Sumo Logic Collector/tanuki/UninstallTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/windows/wrapper.exe
+       Backing up /Applications/Sumo Logic Collector/tanuki/windows/wrapper-windows-x86-32.dll
+       Backing up /Applications/Sumo Logic Collector/tanuki/windows
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-x86-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-linux-x86-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux64/libwrapper.so
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux64/wrapper
+       Backing up /Applications/Sumo Logic Collector/tanuki/linux64
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-aix-ppc-32
+       Backing up /Applications/Sumo Logic Collector/tanuki/wrapper-solaris-sparc-64
+       Backing up /Applications/Sumo Logic Collector/tanuki/StopTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki/InstallTestWrapper-NT.bat
+       Backing up /Applications/Sumo Logic Collector/tanuki
+       Execute action successful after 20 ms
+[INFO] com.install4j.runtime.beans.actions.files.DeleteFileAction [ID 14338]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: null
+       Property files: [powershell]
+       Property filesRoot: null
+       Property backupForRollback: true
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/sumo-remote-collector-config.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-firewall-settings.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/hello.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-wmi-service.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/evtloginfo.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/check-registry-permissions.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/get-sysinfo.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/start-wmi-service.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/change-firewall-settings.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts/change-registry-permissions.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/scripts
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon/readme.txt
+       Backing up /Applications/Sumo Logic Collector/powershell/perfmon
+       Backing up /Applications/Sumo Logic Collector/powershell/events/sumo-remote-collector-config.ps1
+       Backing up /Applications/Sumo Logic Collector/powershell/events/readme.txt
+       Backing up /Applications/Sumo Logic Collector/powershell/events
+       Backing up /Applications/Sumo Logic Collector/powershell
+       Execute action successful after 5 ms
+[INFO] com.install4j.runtime.beans.actions.files.DeleteFileAction [ID 14334]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: com.install4j.script.I4jScript_Internal_17
+       Property files: [script]
+       Property filesRoot: null
+       Property backupForRollback: true
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Backing up /Applications/Sumo Logic Collector/script/preUninstall.sh
+       Backing up /Applications/Sumo Logic Collector/script/postUninstall.sh
+       Backing up /Applications/Sumo Logic Collector/script/postInstall.sh
+       Backing up /Applications/Sumo Logic Collector/script/preInstall.sh
+       Backing up /Applications/Sumo Logic Collector/script
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.files.DeleteFileAction [ID 14336]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: com.install4j.script.I4jScript_Internal_18
+       Property files: [.]
+       Property filesRoot: null
+       Property backupForRollback: true
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Backing up /Applications/Sumo Logic Collector/SumoJNI-64.dll
+       Backing up /Applications/Sumo Logic Collector/startWinmgmtService.bat
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/_CodeSignature
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/bin
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/cmm
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jli
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/unlimited
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy/limited
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/policy
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/jfr
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images/cursors
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/images
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/ext
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/management
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/server
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/applet
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/MacOS
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents
+       Backing up /Applications/Sumo Logic Collector/.install4j/jre.bundle
+       Backing up /Applications/Sumo Logic Collector/.install4j/user
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/_CodeSignature
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/bin
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/cmm
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/jli
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/security/policy/unlimited
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/security/policy/limited
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/security/policy
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/security
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/jfr
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/images/cursors
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/images
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/ext
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/management
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib/server
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre/lib
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home/jre
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/Home
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents/MacOS
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup/Contents
+       Backing up /Applications/Sumo Logic Collector/.install4j/__i4j_jre_backup
+       Backing up /Applications/Sumo Logic Collector/.install4j
+       Backing up /Applications/Sumo Logic Collector/SumoEtw.man
+       Backing up /Applications/Sumo Logic Collector/stopCollectorService.bat
+       Backing up /Applications/Sumo Logic Collector/license/SIGAR
+       Backing up /Applications/Sumo Logic Collector/license/WRAPPER
+       Backing up /Applications/Sumo Logic Collector/license/JACOB
+       Backing up /Applications/Sumo Logic Collector/license
+       Backing up /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/MacOS
+       Backing up /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents/Resources
+       Backing up /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app/Contents
+       Backing up /Applications/Sumo Logic Collector/Sumo Logic Collector Uninstaller.app
+       Backing up /Applications/Sumo Logic Collector/SumoJNI.dll
+       Backing up /Applications/Sumo Logic Collector/config
+       Backing up /Applications/Sumo Logic Collector/script/secureFiles.cmd
+       Backing up /Applications/Sumo Logic Collector/script/unsecureFiles.cmd
+       Backing up /Applications/Sumo Logic Collector/script/safeRestart.cmd
+       Backing up /Applications/Sumo Logic Collector/script
+       Backing up /Applications/Sumo Logic Collector/startCollectorService.bat
+       Backing up /Applications/Sumo Logic Collector/InstallCollector-NT.bat
+       Backing up /Applications/Sumo Logic Collector/logs
+       Backing up /Applications/Sumo Logic Collector/certs
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native/lib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin/native
+       Backing up /Applications/Sumo Logic Collector/19.409-3/bin
+       Backing up /Applications/Sumo Logic Collector/19.409-3/optional-lib
+       Backing up /Applications/Sumo Logic Collector/19.409-3/lib
+       Backing up /Applications/Sumo Logic Collector/19.409-3
+       Backing up /Applications/Sumo Logic Collector/UninstallCollector-NT.bat
+       Backing up /Applications/Sumo Logic Collector/InitializeCollector-NT.bat
+       Backing up /Applications/Sumo Logic Collector/collector.bat
+       Backing up /Applications/Sumo Logic Collector
+       Execute action successful after 43 ms
+[INFO] com.install4j.runtime.beans.actions.files.SetModeAction [ID 14607]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: null
+       Property fileTarget: Files and directories
+       Property files: [collector, script]
+       Property filesRoot: null
+       Property mode: 755
+       Property recursive: true
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Setting mode for /Applications/Sumo Logic Collector/collector
+       Setting mode for /Applications/Sumo Logic Collector/script
+       Setting mode for /Applications/Sumo Logic Collector/script/safeRestart.sh
+       Setting mode for /Applications/Sumo Logic Collector/script/secureFiles.sh
+       Setting mode for /Applications/Sumo Logic Collector/script/configureFipsMode.sh
+       Setting mode for /Applications/Sumo Logic Collector/script/unsecureFiles.sh
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.files.SetModeAction [ID 878]: Execute action
+       Property directoryFilter: null
+       Property fileFilter: null
+       Property fileTarget: Files and directories
+       Property files: [collector]
+       Property filesRoot: null
+       Property mode: 766
+       Property recursive: false
+       Property rollbackSupported: true
+       Property showFileNames: true
+       Property showProgress: false
+       Setting mode for /Applications/Sumo Logic Collector/collector
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction [ID 11]: Execute action
+       Property icon: null
+       Property iconSource: Installer icon
+       Property itemName: Sumo Logic Collector 19.409-3
+       Property persistentProperties: {}
+       Property rollbackSupported: true
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 5937]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_23
+       Property rollbackSupported: false
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 5719]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_25
+       Property rollbackSupported: false
+       Variable changed: collector.addSources=true[class java.lang.String]
+       Variable changed: collector.useSyncSources=true[class java.lang.Boolean]
+       Variable changed: collector.sourceLocation=/Users/ltuser/monitoring/sumologic/sumo_mac_desktop.json[class java.lang.String]
+       Variable changed: collector.useEphemeral=true[class java.lang.Boolean]
+       Variable changed: collector.useClobber=true[class java.lang.Boolean]
+       Execute action successful after 1168 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 2638]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_26
+       Property variableName: collector.name
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: collector.name=hypertest-prod-10-244-32-134-37710daa-a5c9-4a86-a1a3-2c4f13bd6ae0[class java.lang.String]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 7087]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_28
+       Property rollbackSupported: false
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 1137]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_32
+       Property rollbackSupported: false
+       Execute action successful after 2 ms
+[INFO] com.install4j.runtime.beans.actions.files.CopyFileAction [ID 16474]: Execute action
+       Property destinationFile: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security
+       Property destinationRoot: Installation directory
+       Property directoryFilter: null
+       Property directoryMode: 755
+       Property fileFilter: null
+       Property files: [certs/bcfkscacerts]
+       Property filesRoot: Installation directory
+       Property mode: 644
+       Property overwriteMode: Always ask except for update
+       Property uninstallMode: If created
+       Property delay: false
+       Property recursive: true
+       Property rollbackSupported: true
+       Property shared: false
+       Property showFileNames: true
+       Property showProgress: false
+       Property triggerReboot: true
+       Copy /Applications/Sumo Logic Collector/certs/bcfkscacerts to /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/bcfkscacerts
+       Install file: /Applications/Sumo Logic Collector/.install4j/jre.bundle/Contents/Home/jre/lib/security/bcfkscacerts; size: 106886 bytes; exists: false
+       File options set to: [fileTime: Tue Sep 13 01:08:38 GMT 2022, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Execute action successful after 2 ms
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 7]: Rollback barrier reached
+       command: move 1 screens, executing actions, checking condition
+       Variable changed: authRetryCount=0[class java.lang.Integer]
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 4073]: Show screen
+       Variable changed: settings.confirmed=null
+       Variable changed: collector.name=hypertest-prod-10-244-32-134-37710daa-a5c9-4a86-a1a3-2c4f13bd6ae0[class java.lang.String]
+       Variable changed: confirmation.summary=Collector name: hypertest-prod-10-244-32-134-37710daa-a5c9-4a86-a1a3-2c4f13bd6ae0
+Collector URL: Default
+Run as user: Default
+Proxy: None
+Collection Sources: /Users/ltuser/monitoring/sumologic/sumo_mac_desktop.json
+Ephemeral: true
+Clobber: true
+[class java.lang.String]
+       Collector name: hypertest-prod-10-244-32-134-37710daa-a5c9-4a86-a1a3-2c4f13bd6ae0
+Collector URL: Default
+Run as user: Default
+Proxy: None
+Collection Sources: /Users/ltuser/monitoring/sumologic/sumo_mac_desktop.json
+Ephemeral: true
+Clobber: true
+
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 4091]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_37
+       Property variableName: settings.confirmed
+       Property failIfNull: false
+       Property onlyIfUndefined: true
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: settings.confirmed=true[class java.lang.Boolean]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 4073]: command: move 1 screens, executing actions, checking condition
+       Variable changed: installMethod=2[class java.lang.String]
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2403]: Show screen
+       Variable changed: installMethod=2[class java.lang.String]
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2403]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 3433]: Show screen
+       Variable changed: sumo.token_and_url=U1VNTzN3cFYyUGgzTEdJVFk3TmRmVThwemZSOVc2dE1odHRwczovL2NvbGxlY3RvcnMuc3Vtb2xvZ2ljLmNvbQ==[class java.lang.String]
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 6980]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_62
+       Property rollbackSupported: false
+       Variable changed: sumo.accessid=null
+       Variable changed: sumo.accesskey=null
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 5558]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_63
+       Property variableName: sumo.token
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: sumo.token=SUMO3wpV2Ph3LGITY7NdfU8pzfR9W6tM[class java.lang.String]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 5559]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_64
+       Property variableName: collector.url
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: collector.url=https://collectors.sumologic.com[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 3433]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 3510]: Show screen
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 5720]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_66
+       Property rollbackSupported: false
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 4467]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_67
+       Property rollbackSupported: false
+       Execute action successful after 44 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 1137]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_32
+       Property rollbackSupported: false
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 6161]: Execute action
+       Property arguments: [logging of arguments is disabled]
+       Property environmentVariables: {}
+       Property executable: collector
+       Property returnCodeVariable: 
+       Property rollbackArguments: null
+       Property rollbackExecutable: null
+       Property rollbackWorkingDirectory: null
+       Property stderrFile: null
+       Property stderrRedirectionMode: To log file
+       Property stderrVariableName: 
+       Property stdinFile: null
+       Property stdinRedirectionMode: No redirection
+       Property stdinString: 
+       Property stdoutFile: null
+       Property stdoutRedirectionMode: To log file
+       Property stdoutVariableName: 
+       Property timeout: 10
+       Property workingDirectory: .
+       Property failOnStderrFileError: false
+       Property failOnStdinFileError: false
+       Property failOnStdoutFileError: false
+       Property includeParentEnvironmentVariables: true
+       Property keepConsoleWindow: false
+       Property logArguments: false
+       Property rollbackSupported: false
+       Property showWindowsConsole: false
+       Property updateStderrVariableLines: false
+       Property updateStdoutVariableLines: false
+       Property useRollbackExecutable: false
+       Property wait: true
+       Property waitForStreams: true
+       used working dir: /Applications/Sumo Logic Collector/.
+[INFO] com.install4j.runtime.installer.helper.launching.LaunchHelper: return value is 1
+       
+stdout output:
+---BEGIN---
+Detected Mac OSX:
+The SumoLogic Collector daemon is not currently installed.
+---END---
+       stderr output was empty
+[ERROR] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 6161]: return value is 1
+        Execute action not successful after 509 ms
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 1138]: Execute action
+       Property arguments: [logging of arguments is disabled]
+       Property environmentVariables: {}
+       Property executable: collector
+       Property returnCodeVariable: 
+       Property rollbackArguments: null
+       Property rollbackExecutable: null
+       Property rollbackWorkingDirectory: null
+       Property stderrFile: null
+       Property stderrRedirectionMode: To log file
+       Property stderrVariableName: 
+       Property stdinFile: null
+       Property stdinRedirectionMode: No redirection
+       Property stdinString: 
+       Property stdoutFile: null
+       Property stdoutRedirectionMode: To log file
+       Property stdoutVariableName: 
+       Property timeout: 10
+       Property workingDirectory: .
+       Property failOnStderrFileError: false
+       Property failOnStdinFileError: false
+       Property failOnStdoutFileError: false
+       Property includeParentEnvironmentVariables: true
+       Property keepConsoleWindow: false
+       Property logArguments: false
+       Property rollbackSupported: false
+       Property showWindowsConsole: false
+       Property updateStderrVariableLines: false
+       Property updateStdoutVariableLines: false
+       Property useRollbackExecutable: false
+       Property wait: true
+       Property waitForStreams: true
+       used working dir: /Applications/Sumo Logic Collector/.
+[INFO] com.install4j.runtime.installer.helper.launching.LaunchHelper: stdout output was empty
+       stderr output was empty
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 1138]: Execute action successful after 509 ms
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 3435]: Execute action
+       Property arguments: [logging of arguments is disabled]
+       Property environmentVariables: {}
+       Property executable: collector
+       Property returnCodeVariable: 
+       Property rollbackArguments: null
+       Property rollbackExecutable: null
+       Property rollbackWorkingDirectory: null
+       Property stderrFile: null
+       Property stderrRedirectionMode: To log file
+       Property stderrVariableName: 
+       Property stdinFile: null
+       Property stdinRedirectionMode: No redirection
+       Property stdinString: 
+       Property stdoutFile: null
+       Property stdoutRedirectionMode: To log file
+       Property stdoutVariableName: 
+       Property timeout: 60
+       Property workingDirectory: .
+       Property failOnStderrFileError: false
+       Property failOnStdinFileError: false
+       Property failOnStdoutFileError: false
+       Property includeParentEnvironmentVariables: true
+       Property keepConsoleWindow: false
+       Property logArguments: false
+       Property rollbackSupported: false
+       Property showWindowsConsole: false
+       Property updateStderrVariableLines: false
+       Property updateStdoutVariableLines: false
+       Property useRollbackExecutable: false
+       Property wait: true
+       Property waitForStreams: true
+       used working dir: /Applications/Sumo Logic Collector/.
+[INFO] com.install4j.runtime.installer.helper.launching.LaunchHelper: 
+stdout output:
+---BEGIN---
+Starting SumoLogic Collector. Detected Mac OSX and installed launchd daemon.
+Waiting for SumoLogic Collector.......
+running: PID:1729
+---END---
+       stderr output was empty
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 3435]: Execute action successful after 4167 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3438]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_80
+       Property variableName: registration.result
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Registration result is RegistrationResult(true,Registered successfully.,000000000C85DC42,0000000000BC15B1,None)
+       Variable changed: registration.result=RegistrationResult(true,Registered successfully.,000000000C85DC42,0000000000BC15B1,None)[class com.sumologic.scala.collector.auth.RegistrationResult]
+       Execute action successful after 1325 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 3889]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_81
+       Property rollbackSupported: false
+       Registration result wasRegistrationResult(true,Registered successfully.,000000000C85DC42,0000000000BC15B1,None)
+       Registered successfully.
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 3510]: command: move 1 screens, executing actions, checking condition
+       Variable changed: authRetryCount=1[class java.lang.Integer]
+[INFO] com.install4j.runtime.beans.screens.FinishedScreen [ID 12]: Show screen
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 7890]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_93
+       Property variableName: runAs.username
+       Property failIfNull: false
+       Property onlyIfUndefined: true
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: runAs.username=[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 7611]: Execute action
+       Property arguments: [logging of arguments is disabled]
+       Property environmentVariables: {}
+       Property executable: script/secureFiles.sh
+       Property returnCodeVariable: 
+       Property rollbackArguments: null
+       Property rollbackExecutable: null
+       Property rollbackWorkingDirectory: null
+       Property stderrFile: null
+       Property stderrRedirectionMode: To log file
+       Property stderrVariableName: 
+       Property stdinFile: null
+       Property stdinRedirectionMode: No redirection
+       Property stdinString: 
+       Property stdoutFile: null
+       Property stdoutRedirectionMode: To log file
+       Property stdoutVariableName: 
+       Property timeout: 10
+       Property workingDirectory: .
+       Property failOnStderrFileError: false
+       Property failOnStdinFileError: false
+       Property failOnStdoutFileError: false
+       Property includeParentEnvironmentVariables: true
+       Property keepConsoleWindow: false
+       Property logArguments: false
+       Property rollbackSupported: false
+       Property showWindowsConsole: false
+       Property updateStderrVariableLines: false
+       Property updateStdoutVariableLines: false
+       Property useRollbackExecutable: false
+       Property wait: true
+       Property waitForStreams: true
+       used working dir: /Applications/Sumo Logic Collector/.
+[INFO] com.install4j.runtime.installer.helper.launching.LaunchHelper: stderr output was empty
+       
+stdout output:
+---BEGIN---
+Start securing files under . with [root:sumologic_collector]...
+Securing files succeed.
+---END---
+[INFO] com.install4j.runtime.beans.actions.misc.RunExecutableAction [ID 7611]: Execute action successful after 968 ms
+       Rollback barrier reached
+[INFO] com.install4j.runtime.beans.screens.FinishedScreen [ID 12]: command: finish
+       cleaning up
+       Finished at 2022-10-13 18:05:48

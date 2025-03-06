@@ -1,0 +1,6 @@
+---
+- name: Test xcode
+  hosts: localhost
+  remote_user: root
+  roles:
+    - xcode # noqa: syntax-check[specific]

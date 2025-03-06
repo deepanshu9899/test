@@ -1,0 +1,73 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "name": "DeleteBlobsOlderThan65Days-2",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 65
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": [
+            "reports/",
+            "cache/",
+            "task-logs/",
+            "cache-directories/"
+          ]
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "name": "DeleteBlobsOlderThan15Days",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 15
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": ["uploads/"]
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "name": "DeleteBlobsOlderThan65Days",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 65
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": [
+            "jobs/",
+            "hypertest-vm-logs/",
+            "misc/logs",
+            "uploads-config/",
+            "artefacts/",
+            "misc/git-info",
+            "misc/raw-yaml",
+            "prod-magicleap-desktop-artefacts-v1/",
+            "screenshots/"
+          ]
+        }
+      }
+    }
+  ]
+}

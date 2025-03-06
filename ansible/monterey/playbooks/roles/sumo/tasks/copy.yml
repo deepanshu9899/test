@@ -1,0 +1,17 @@
+---
+- name: Copy sumo binaries to machine
+  ansible.posix.synchronize:
+    src: roles/{{ role_path | basename }}/files/Sumo Logic Collector
+    dest: /Users/{{ ansible_user }}/Downloads/
+    checksum: true
+    recursive: true
+    rsync_opts:
+      - --rsh='sshpass -p {{ ansible_ssh_pass }} ssh -l {{ ansible_user }}'
+
+- name: Move to correct location
+  become: true
+  ansible.builtin.copy:
+    mode: u=rwx,g=r-x,o=---
+    src: /Users/{{ ansible_user }}/Downloads/Sumo Logic Collector
+    remote_src: true
+    dest: /Applications/

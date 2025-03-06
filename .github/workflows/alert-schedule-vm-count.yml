@@ -1,0 +1,37 @@
+name: Run VM Count Alert Script
+
+on:
+  workflow_dispatch:  
+  schedule:
+    - cron: "30 4,16 * * *" 
+
+
+jobs:
+  Alert:
+    runs-on: ubuntu
+    environment: ${{github.ref_name}}-withoutapproval
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies 
+      run: |
+        pip3 install azure-identity slack-sdk azure-mgmt-core azure-mgmt-resource 
+
+    - name: Run Python script
+      run: python3 tools/count-alert.py
