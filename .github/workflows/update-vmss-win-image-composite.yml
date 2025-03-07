@@ -54,7 +54,10 @@ jobs:
             echo "ENV_NAME=msft_prod" >> $GITHUB_OUTPUT
           else
             echo "ENV_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-        shell: bash       
+          fi
+        shell: bash
+      - name: Echo Environment
+        run: echo "Environment set to ${{ steps.determine-env.outputs.ENV_NAME }}"       
   update-image:
     needs: [setup-environment]
     environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
