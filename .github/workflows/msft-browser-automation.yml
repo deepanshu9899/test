@@ -367,7 +367,7 @@ jobs:
           BROWSER: ${{ github.event.inputs.browser }}
           VERSION: ${{ github.event.inputs.versions }}
           OPERATING_SYSTEM: ${{ github.event.inputs.platform }}
-          ENVIRONMENT: ${{ github.ref_name }}-withoutapproval
+          ENVIRONMENT: ${{ github.ref_name }}
           LT_USERNAME: "hypvmrefreshusemsftsub"
           LT_ACCESS_KEY: ${{ secrets.MSFT_SMOKES_ACCESS_KEY }}
         run: |
