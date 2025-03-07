@@ -82,8 +82,8 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
-      - name: Azure login for other resource groups
-        if: inputs.resource_group_name != 'hype_msft_prod' 
+      - name: Azure login for other hype_msft_prod
+        if: inputs.resource_group_name == 'hype_msft_prod' 
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}

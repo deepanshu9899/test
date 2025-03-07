@@ -256,7 +256,7 @@ jobs:
     outputs:
       OUTPUT_GALLERY_NAME: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_NAME }}
       OUTPUT_GALLERY_IMAGE_DEFINITION: ${{ steps.wait_os_image_creation.outputs.OUTPUT_GALLERY_IMAGE_DEFINITION }}
-    needs: [create-os-gallery-image]
+    needs: [create-os-gallery-image,setup-environment]
     environment: ${{ needs.setup-environment.outputs.ENV_NAME }}
     env:
         SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_MSFT }}

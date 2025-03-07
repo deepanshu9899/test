@@ -160,7 +160,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_MSFT }}
-      - name: Azure login for hyperexecute-prod-extended
+      - name: Azure login for hype_msft_prod
         if: inputs.resource_group_name == 'hype_msft_prod'
         uses: azure/login@v1
         with:
