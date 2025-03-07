@@ -47,7 +47,7 @@ on:
         options:
          - vmssSubnet
          - vmssSubnet2
-         - hye_msft_subnet1
+         - vmssSubnetWithoutNatG
 
     
 
